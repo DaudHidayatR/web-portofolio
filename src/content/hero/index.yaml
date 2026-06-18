@@ -1,0 +1,18 @@
+name: Daud Hidayat Ramadhan
+title: DevSecOps & Backend Engineer
+description: >-
+  DevSecOps & Backend Engineer focused on Secure SDLC, CI/CD security,
+  backend services, Kubernetes, and practical automation. I build secure
+  backend systems and security-aware delivery workflows.
+avatar: '@assets/hero/img-7091t.webp'
+location: 🇮🇩 Indonesia
+socialLinks:
+  - url: mailto:daud28ramadhan@gmail.com
+    icon: Email
+    label: Email
+  - url: https://github.com/DaudHidayatR
+    icon: GitHub
+    label: GitHub
+  - url: https://www.linkedin.com/in/daud-hidayat-ramadhan
+    icon: LinkedIn
+    label: LinkedIn

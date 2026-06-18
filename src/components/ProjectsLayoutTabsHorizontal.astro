@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from "astro:content";
+/**
+ * ProjectsLayoutTabsHorizontal
+ * Renders projects using DaisyUI tabs-border with horizontal tabs at the top.
+ * Each category is a tab, its projects shown in a card grid below.
+ */
+import ProjectCard from "./ProjectCard.astro";
+
+interface CategoryGroup {
+	slug: string;
+	title: string;
+	description?: string;
+	icon?: string;
+	projects: CollectionEntry<"projects">[];
+}
+
+interface Props {
+	categoryGroups: CategoryGroup[];
+	uncategorizedProjects: CollectionEntry<"projects">[];
+}
+
+const { categoryGroups, uncategorizedProjects } = Astro.props;
+
+const allProjects = [
+	...categoryGroups.flatMap((group) => group.projects),
+	...uncategorizedProjects,
+].sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+
+const getProjectCategoryLabel = (project: CollectionEntry<"projects">, tabSlug: string) => {
+	if (tabSlug === "_all") {
+		return categoryGroups.find((group) => group.slug === project.data.category)?.title;
+	}
+
+	return tabSlug !== "_other" ? categoryGroups.find((group) => group.slug === tabSlug)?.title : undefined;
+};
+
+// Merge all projects, categorized projects, and uncategorized projects into the tab list
+const allTabs = [
+	{
+		slug: "_all",
+		title: "All Projects",
+		description: "Every project in one place, across DevSecOps, backend, cloud, security, and other work.",
+		icon: "🗂️",
+		projects: allProjects,
+	},
+	...categoryGroups,
+	...(uncategorizedProjects.length > 0
+		? [
+				{
+					slug: "_other",
+					title: "Other",
+					description: "Projects not assigned to a category.",
+					icon: "📁",
+					projects: uncategorizedProjects,
+				},
+			]
+		: []),
+];
+---
+
+<div class="tabs tabs-border justify-center">
+  {allTabs.map((tab, index) => (
+    <>
+      <input
+        type="radio"
+        name="projects_tabs_h"
+        class="tab"
+        aria-label={`${tab.icon ?? ""} ${tab.title}`.trim()}
+        checked={index === 0}
+      />
+      <div class="tab-content pt-6">
+        <h3 class="text-2xl font-bold mb-1">
+          {tab.icon && <span class="mr-2">{tab.icon}</span>}
+          {tab.title}
+        </h3>
+        {tab.description && (
+          <p class="text-base-content/60 mb-6">{tab.description}</p>
+        )}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {tab.projects.map((project) => (
+            <ProjectCard
+              project={project}
+              categoryLabel={getProjectCategoryLabel(project, tab.slug)}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  ))}
+</div>
+
+
+

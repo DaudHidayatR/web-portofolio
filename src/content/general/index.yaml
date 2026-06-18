@@ -1,0 +1,27 @@
+projectsLayout: tabs-horizontal
+enableThemeSelector: true
+extraLinksEnabled: true
+extraLinks:
+  - link: /projects
+    icon: Briefcase
+    label: Projects
+    displayOn: both
+  - link: /blog
+    icon: BookOpen
+    label: Blog
+    displayOn: both
+  - link: mailto:daud28ramadhan@gmail.com
+    icon: Mail
+    label: Contact
+    displayOn: both
+  - link: https://github.com/DaudHidayatR
+    icon: CodeXml
+    label: GitHub
+    displayOn: both
+showAboutSection: true
+showProjectsSection: true
+showBlogSection: true
+showWorkSection: true
+showEducationSection: true
+showHackathonsSection: false
+showContactSection: true
