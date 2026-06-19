@@ -100,22 +100,22 @@ const projects = defineCollection({
 });
 
 // Hackathons collection
-const hackathons = defineCollection({
-	loader: glob({
-		pattern: "**/*.{md,yaml}",
-		base: "./src/content/hackathons",
-	}),
-	schema: ({ image }) =>
-		z.object({
-			title: z.string(),
-			location: z.string(),
-			description: z.string(),
-			startDate: z.coerce.date(),
-			endDate: z.coerce.date().optional(),
-			logo: image().optional(),
-			sourceLink: z.string().url().optional(),
-		}),
-});
+// const hackathons = defineCollection({
+// 	loader: glob({
+// 		pattern: "**/*.{md,yaml}",
+// 		base: "./src/content/hackathons",
+// 	}),
+// 	schema: ({ image }) =>
+// 		z.object({
+// 			title: z.string(),
+// 			location: z.string(),
+// 			description: z.string(),
+// 			startDate: z.coerce.date(),
+// 			endDate: z.coerce.date().optional(),
+// 			logo: image().optional(),
+// 			sourceLink: z.string().url().optional(),
+// 		}),
+// });
 
 // Blog collection
 const blog = defineCollection({
@@ -201,7 +201,7 @@ export const collections = {
 	education,
 	projectCategories,
 	projects,
-	hackathons,
+	// hackathons,
 	blog,
 	about,
 	general,

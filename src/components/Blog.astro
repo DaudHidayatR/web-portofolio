@@ -14,17 +14,25 @@ const sortedPosts = blogEntries.sort(
 const latestPosts = sortedPosts.slice(0, 3);
 ---
 
-<section id="blog" class="py-20 px-4 bg-base-300">
+<section id="blog" class="py-16 sm:py-20 px-4 bg-base-300">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold mb-4">Latest Blog Posts</h2>
-      <p class="text-lg text-base-content/70">
-        Thoughts, insights, and tutorials on web development, design, and
-        technology.
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">DevSecOps & Backend Blog</h2>
+      <p class="text-base sm:text-lg text-base-content/70 max-w-3xl mx-auto">
+        Writing about Secure SDLC, CI/CD security, backend API security,
+        Kubernetes, OpenBao, and lessons from building security-aware delivery
+        workflows.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div
+      class:list={[
+        "grid grid-cols-1 gap-6",
+        latestPosts.length === 1
+          ? "max-w-2xl mx-auto"
+          : "md:grid-cols-2 lg:grid-cols-3",
+      ]}
+    >
       {latestPosts.map((post) => <BlogCard post={post} />)}
     </div>
 

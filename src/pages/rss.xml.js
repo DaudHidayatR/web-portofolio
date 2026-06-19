@@ -7,7 +7,7 @@ export async function GET(context) {
 	return rss({
 		title: "Daud Hidayat Ramadhan",
 		description:
-			"Backend engineering, DevSecOps, cloud infrastructure, Go, Kubernetes, and GCP notes from Daud Hidayat Ramadhan.",
+			"Backend engineering, DevSecOps, Secure SDLC, CI/CD security, Kubernetes, and OpenBao articles from Daud Hidayat Ramadhan.",
 		site: context.site,
 		items: posts
 			.sort(

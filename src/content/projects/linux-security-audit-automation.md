@@ -3,8 +3,8 @@ title: Linux Security Audit Automation
 description: >-
   A DevSecOps lab project for turning manual Linux security checks into repeatable
   audit scripts and CI/CD-friendly reports.
-image: '@assets/projects/mary-ui-laravel-starter-kit/image.png'
-startDate: 2026-01-01
+image: '@assets/placeholders/project-devsecops.svg'
+startDate: 2026-05-01
 skills:
   - Linux
   - Shell

@@ -22,11 +22,11 @@ interface Props {
 const { hero } = Astro.props;
 ---
 
-<section class="hero min-h-screen">
-  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl">
+<section class="hero min-h-[calc(100svh-4rem)] py-16 px-4 sm:min-h-screen sm:py-20">
+  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl gap-8 lg:gap-16 px-0">
     <div class="hover-3d">
       <!-- content -->
-      <figure class="max-w-100 w-48 lg:w-64 aspect-square overflow-hidden mask mask-squircle">
+      <figure class="max-w-100 w-40 sm:w-48 lg:w-64 aspect-square overflow-hidden mask mask-squircle">
         {
           typeof hero.avatar === "string" ? (
             <img src={hero.avatar} alt={hero.name} class="h-full w-full object-cover object-top" />
@@ -46,7 +46,7 @@ const { hero } = Astro.props;
       <div></div>
     </div>
     <div class="max-w-2xl text-center lg:text-left">
-      <h1 class="text-4xl lg:text-5xl font-bold mb-4">
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4 text-balance">
         Hi, I'm {hero.name}
       </h1>
       <p class="skeleton skeleton-text text-xl text-base-content/80 mb-2" set:html={parseInlineLinks(hero.title)} />
@@ -55,7 +55,7 @@ const { hero } = Astro.props;
           <p class="text-base-content/60 mb-4">{hero.location}</p>
         )
       }
-      <p class="text-lg leading-relaxed mb-6" set:html={parseInlineLinks(hero.description)} />
+      <p class="text-base sm:text-lg leading-relaxed mb-6" set:html={parseInlineLinks(hero.description)} />
       <div
         class="grid grid-cols-4 gap-2 justify-items-center lg:flex lg:gap-4 lg:justify-start"
       >

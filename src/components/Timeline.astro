@@ -5,23 +5,23 @@ import { ExternalLink } from "@lucide/astro";
 import SkillBadge from "./SkillBadge.astro";
 
 interface Props {
-    collection: "work" | "education";
-    variant: "timeline" | "list";
-    color?: string;
-    backgroundColor?: string;
-    icon: any; // Pass the icon component directly
-    sectionTitle: string;
-    sectionSubtitle?: string;
+	collection: "work" | "education";
+	variant: "timeline" | "list";
+	color?: string;
+	backgroundColor?: string;
+	icon: any; // Pass the icon component directly
+	sectionTitle: string;
+	sectionSubtitle?: string;
 }
 
 const {
-    collection,
-    variant,
-    color = "primary",
-    backgroundColor = "base-200",
-    icon,
-    sectionTitle,
-    sectionSubtitle,
+	collection,
+	variant,
+	color = "primary",
+	backgroundColor = "base-200",
+	icon,
+	sectionTitle,
+	sectionSubtitle,
 } = Astro.props;
 
 // Dynamic component - must be capitalized
@@ -36,56 +36,56 @@ const aboutLink = aboutEntry?.data?.link;
 
 // Sort by start date, most recent first
 const sortedEntries = entries.sort(
-    (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
+	(a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
 );
 
 function formatPeriod(startDate: Date, endDate?: Date) {
-    const options: Intl.DateTimeFormatOptions = {
-        month: "short",
-        year: "numeric",
-    };
-    const start = startDate.toLocaleDateString("en-US", options);
-    const end = endDate
-        ? endDate.toLocaleDateString("en-US", options)
-        : "Present";
-    return `${start} - ${end}`;
+	const options: Intl.DateTimeFormatOptions = {
+		month: "short",
+		year: "numeric",
+	};
+	const start = startDate.toLocaleDateString("en-US", options);
+	const end = endDate
+		? endDate.toLocaleDateString("en-US", options)
+		: "Present";
+	return `${start} - ${end}`;
 }
 
 function calculateDuration(startDate: Date, endDate?: Date): string | null {
-    if (!endDate) return null; // Don't show for "Present"
+	if (!endDate) return null; // Don't show for "Present"
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+	const start = new Date(startDate);
+	const end = new Date(endDate);
 
-    // Calculate total months between dates
-    const totalMonths =
-        (end.getFullYear() - start.getFullYear()) * 12 +
-        (end.getMonth() - start.getMonth()) +
-        1; // Add 1 to include both start and end months
+	// Calculate total months between dates
+	const totalMonths =
+		(end.getFullYear() - start.getFullYear()) * 12 +
+		(end.getMonth() - start.getMonth()) +
+		1; // Add 1 to include both start and end months
 
-    const years = Math.floor(totalMonths / 12);
-    const months = totalMonths % 12;
+	const years = Math.floor(totalMonths / 12);
+	const months = totalMonths % 12;
 
-    // Format the duration string
-    if (years === 0) {
-        return `(${months} mo${months !== 1 ? "s" : ""})`;
-    } else if (months === 0) {
-        return `(${years} yr${years !== 1 ? "s" : ""})`;
-    } else {
-        return `(${years} yr${years !== 1 ? "s" : ""} ${months} mo${months !== 1 ? "s" : ""})`;
-    }
+	// Format the duration string
+	if (years === 0) {
+		return `(${months} mo${months !== 1 ? "s" : ""})`;
+	} else if (months === 0) {
+		return `(${years} yr${years !== 1 ? "s" : ""})`;
+	} else {
+		return `(${years} yr${years !== 1 ? "s" : ""} ${months} mo${months !== 1 ? "s" : ""})`;
+	}
 }
 
 // Render markdown content for each entry
 const entriesWithContent = await Promise.all(
-    sortedEntries.map(async (entry) => {
-        const { Content } = await render(entry);
-        return { entry, Content };
-    }),
+	sortedEntries.map(async (entry) => {
+		const { Content } = await render(entry);
+		return { entry, Content };
+	}),
 );
 ---
 
-<section id={collection} class={`py-20 px-4 bg-${backgroundColor}`}>
+<section id={collection} class={`py-16 sm:py-20 px-4 bg-${backgroundColor}`}>
     <div
         class={`mx-auto ${variant === "timeline" ? "max-w-4xl" : "max-w-4xl"}`}
     >
@@ -101,21 +101,18 @@ const entriesWithContent = await Promise.all(
         {
             variant === "timeline" ? (
                 <>
-                    <ul class="timeline timeline-vertical timeline-snap-icon">
+                    <ul class="mx-auto max-w-3xl space-y-6">
                         {entriesWithContent.map(({ entry, Content }, index) => (
-                            <li>
-                                {index > 0 && <hr class="bg-base-100" />}
-                                <div class="timeline-middle">
-                                    <IconComponent
-                                        class={`size-5 text-${color} mx-3 my-1`}
-                                    />
+                            <li class="relative pl-10">
+                                <div class={`absolute left-0 top-2 flex size-8 items-center justify-center rounded-full bg-base-100 text-${color} shadow`}>
+                                    <IconComponent class="size-4" />
                                 </div>
-                                <div
-                                    class={`timeline-${index % 2 === 0 ? "start" : "end"} max-w-2xs pt-3 mb-10`}
-                                >
-                                    <time
-                                        class={`font-mono text-sm text-base-content/70 block italic ${index % 2 === 0 ? "text-end" : ""}`}
-                                    >
+                                {index < entriesWithContent.length - 1 && (
+                                    <div class="absolute left-4 top-12 h-[calc(100%+1.5rem)] w-px bg-base-100" />
+                                )}
+                                <article class="card bg-base-100 shadow-lg">
+                                    <div class="card-body p-5 sm:p-6">
+                                        <time class="font-mono text-sm text-base-content/70 italic">
                                         {formatPeriod(
                                             entry.data.startDate,
                                             entry.data.endDate,
@@ -131,12 +128,10 @@ const entriesWithContent = await Promise.all(
                                                 )}
                                             </span>
                                         )}
-                                    </time>
-                                    <div class="card bg-base-100 shadow-xl mt-2">
-                                        <div class="card-body">
-                                            <div class="flex items-center gap-4">
+                                        </time>
+                                        <div class="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
                                                 {entry.data.logo && (
-                                                    <div class="w-20 h-20 flex shrink-0 items-center justify-center rounded-lg bg-base-200 p-2">
+                                                    <div class="w-16 h-16 sm:w-20 sm:h-20 flex shrink-0 items-center justify-center rounded-lg bg-base-200 p-2">
                                                         <Image
                                                             src={
                                                                 entry.data.logo
@@ -167,8 +162,8 @@ const entriesWithContent = await Promise.all(
                                                         </p>
                                                     )}
                                                 </div>
-                                            </div>
-                                            <div class="card-actions justify-end mt-2">
+                                        </div>
+                                            <div class="card-actions justify-end mt-4">
                                                 <button
                                                     class="btn btn-ghost btn-sm"
                                                     onclick={`document.getElementById('modal-${entry.id}').showModal()`}
@@ -176,12 +171,8 @@ const entriesWithContent = await Promise.all(
                                                     Read more
                                                 </button>
                                             </div>
-                                        </div>
                                     </div>
-                                </div>
-                                {index < entriesWithContent.length - 1 && (
-                                    <hr class="bg-base-100" />
-                                )}
+                                </article>
                             </li>
                         ))}
                     </ul>
@@ -278,12 +269,12 @@ const entriesWithContent = await Promise.all(
                     ))}
                 </>
             ) : (
-                <ul class="list bg-base-100 rounded-box shadow-lg">
+                <ul class="list bg-base-100 rounded-box shadow-lg overflow-hidden">
                     {entriesWithContent.map(({ entry, Content }, index) => (
                         <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
                             <details class="collapse">
                                 <summary class="collapse-title pe-5">
-                                    <div class="list-row p-0 items-center after:hidden">
+                                    <div class="grid gap-3 sm:grid-cols-[auto_1fr_auto] sm:items-center">
                                         <div>
                                             {entry.data.logo && (
                                                 <div class="w-16 h-16 flex shrink-0 items-center justify-center rounded-lg bg-base-200 p-1.5">
@@ -297,7 +288,7 @@ const entriesWithContent = await Promise.all(
                                             )}
                                         </div>
 
-                                        <div>
+                                        <div class="min-w-0">
                                             <h3 class="font-bold text-lg">
                                                 {entry.data.title}
                                             </h3>
@@ -308,7 +299,7 @@ const entriesWithContent = await Promise.all(
                                             </p>
                                         </div>
 
-                                        <div class="text-sm text-base-content/70 font-mono whitespace-nowrap">
+                                        <div class="text-sm text-base-content/70 font-mono sm:text-right">
                                             {formatPeriod(
                                                 entry.data.startDate,
                                                 entry.data.endDate,

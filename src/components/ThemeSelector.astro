@@ -2,12 +2,12 @@
 import { Palette } from "@lucide/astro";
 
 const themes = [
-    { value: "light", label: "Light" },
-    { value: "dark", label: "Dark" },
-    // { value: "synthwave", label: "Synthwave" },
-    // { value: "retro", label: "Retro" },
-    // { value: "valentine", label: "Valentine" },
-    { value: "dim", label: "Dim" },
+	{ value: "light", label: "Light" },
+	{ value: "dark", label: "Dark" },
+	// { value: "synthwave", label: "Synthwave" },
+	{ value: "retro", label: "Retro" },
+	// { value: "valentine", label: "Valentine" },
+	{ value: "dim", label: "Dim" },
 ];
 ---
 
@@ -43,11 +43,10 @@ const themes = [
         const savedTheme = localStorage.getItem("theme");
         let theme = savedTheme;
 
-        // If no saved theme, use system preference
+        // If no saved theme, use the daisyUI default (dim)
         if (!theme) {
-            theme = window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light";
+            theme =
+                document.documentElement.getAttribute("data-theme") || "dim";
         }
 
         // Apply theme to document

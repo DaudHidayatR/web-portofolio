@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">DevSecOps Project</title>
+  <desc id="desc">Placeholder cover image for DevSecOps Project</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1010" cy="120" r="180" fill="rgba(255,255,255,.10)"/>
+  <circle cx="180" cy="520" r="220" fill="rgba(255,255,255,.08)"/>
+  <g transform="translate(96 126)">
+    <rect width="132" height="132" rx="28" fill="rgba(255,255,255,.16)"/>
+    <path d="M38 72h56M66 38v56M42 96h48" stroke="white" stroke-width="12" stroke-linecap="round" opacity=".95"/>
+  </g>
+  <text x="96" y="330" fill="white" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="72" font-weight="800">DevSecOps Project</text>
+  <text x="100" y="405" fill="rgba(255,255,255,.82)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="34">Secure SDLC / CI/CD / Automation</text>
+  <text x="100" y="516" fill="rgba(255,255,255,.58)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24">daudhidayatramadhan.my.id</text>
+</svg>

@@ -36,9 +36,7 @@
   function setTheme() {
     const theme =
       localStorage.getItem("theme") ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? darkThemeName
-        : lightThemeName);
+      document.documentElement.getAttribute("data-theme");
     document.documentElement.setAttribute("data-theme", theme);
     const toggle = document.querySelector(".theme-controller");
     if (toggle) {

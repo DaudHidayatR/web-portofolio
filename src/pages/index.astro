@@ -23,15 +23,15 @@ const general = generalEntry.data;
 ---
 
 <Layout
-  title={`${heroEntry.data.name} - Portfolio`}
-  description={heroEntry.data.description}
+  title={`${heroEntry.data.name} | DevSecOps & Backend Engineer`}
+  description="DevSecOps and Backend Engineering portfolio by Daud Hidayat Ramadhan, covering Secure SDLC, CI/CD security, REST APIs, Kubernetes, and automation."
 >
   <main>
     <!-- Hero Section (Always visible) -->
     <Hero hero={heroEntry.data} />
 
-    <!-- All other sections hidden on mobile -->
-    <div class="hidden lg:block">
+    <!-- Primary content stays visible on mobile for users and mobile-first indexing. -->
+    <div class="contents">
       <!-- About Section -->
       {
         general.showAboutSection && (

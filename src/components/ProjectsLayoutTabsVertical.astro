@@ -28,12 +28,18 @@ const allProjects = [
 	...uncategorizedProjects,
 ].sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
 
-const getProjectCategoryLabel = (project: CollectionEntry<"projects">, tabSlug: string) => {
+const getProjectCategoryLabel = (
+	project: CollectionEntry<"projects">,
+	tabSlug: string,
+) => {
 	if (tabSlug === "_all") {
-		return categoryGroups.find((group) => group.slug === project.data.category)?.title;
+		return categoryGroups.find((group) => group.slug === project.data.category)
+			?.title;
 	}
 
-	return tabSlug !== "_other" ? categoryGroups.find((group) => group.slug === tabSlug)?.title : undefined;
+	return tabSlug !== "_other"
+		? categoryGroups.find((group) => group.slug === tabSlug)?.title
+		: undefined;
 };
 
 // Merge all projects, categorized projects, and uncategorized projects into the tab list
@@ -41,7 +47,8 @@ const allTabs = [
 	{
 		slug: "_all",
 		title: "All Projects",
-		description: "Every project in one place, across DevSecOps, backend, cloud, security, and other work.",
+		description:
+			"Every project in one place, across DevSecOps, backend, cloud, security, and other work.",
 		icon: "🗂️",
 		projects: allProjects,
 	},

@@ -3,8 +3,8 @@ title: DevSecOps Security Scanning Pipeline
 description: >-
   A CI/CD security scanning pipeline concept for validating applications with
   SAST, dependency checks, container scanning, and secret scanning before deployment.
-image: '@assets/projects/screencial/image.png'
-startDate: 2026-01-01
+image: '@assets/placeholders/project-devsecops.svg'
+startDate: 2026-05-01
 skills:
   - CI/CD Security
   - SAST

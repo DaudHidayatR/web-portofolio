@@ -5,8 +5,8 @@ title: Self-Hosted DevSecOps Lab
 description: >-
   A personal lab for practicing Kubernetes, service mesh, secrets management,
   and secure delivery patterns in a controlled environment.
-image: '@assets/projects/templix-professional-marketplace-template/image.png'
-startDate: 2026-01-01
+image: '@assets/placeholders/project-devsecops.svg'
+startDate: 2026-05-01
 skills:
   - Kubernetes
   - Istio

@@ -3,6 +3,7 @@ title: Universitas Islam Indonesia
 subtitle: Bachelor of Informatics
 startDate: 2021-08-01
 endDate: 2026-01-31
+logo: "@assets/work/logo-uii-asli.webp"
 link: https://www.uii.ac.id
 ---
 - Focused on informatics fundamentals, backend application development, databases, and software engineering practice.

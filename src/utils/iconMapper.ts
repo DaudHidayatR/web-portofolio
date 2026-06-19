@@ -65,6 +65,7 @@ export type IconName =
 	| "YouTube"
 	| "Email";
 
+// biome-ignore lint/suspicious/noExplicitAny: mixed Astro/Lucide component types are not unifiable in a single record
 export const iconMap: Record<IconName, any> = {
 	Flower2,
 	BookOpen,

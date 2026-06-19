@@ -5,8 +5,8 @@ title: Cloudflare Workers Security Scanner
 description: >-
   A serverless security-scanning concept using Cloudflare Workers as a lightweight
   validation layer for URLs, headers, and deployment-facing checks.
-image: '@assets/projects/bloomfolio/image.png'
-startDate: 2026-01-01
+image: '@assets/placeholders/project-devsecops.svg'
+startDate: 2026-05-01
 skills:
   - Cloudflare Workers
   - Security Scanning

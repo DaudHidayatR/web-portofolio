@@ -9,9 +9,32 @@ variables on ThemeToggle component with the new theme names.
 The name should be the same as the theme name below.
 */
 @plugin "daisyui" {
-    themes:
-        light,
-        dark --prefersdark,
-        /*synthwave,*/ /*retro,
-        valentine,*/ dim --default;
+	themes:
+		light --default,
+		dark --prefersdark,
+		retro,
+		dim;
+}
+
+html {
+	overflow-x: hidden;
+}
+
+body {
+	overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas {
+	max-width: 100%;
+}
+
+.text-balance {
+	text-wrap: balance;
+}
+
+.prose {
+	overflow-wrap: anywhere;
 }
