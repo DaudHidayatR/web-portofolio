@@ -168,7 +168,15 @@ jobs:
         run: echo "name=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
       - name: Install Conftest
-        uses: open-policy-agent/setup-conftest@v1
+        run: |
+          CONFTEST_VERSION=0.56.0
+          CONFTEST_TARBALL="conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
+          curl -sSL \
+            "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/${CONFTEST_TARBALL}" \
+            -o conftest.tar.gz
+          tar -xzf conftest.tar.gz conftest
+          sudo mv conftest /usr/local/bin/conftest
+          conftest --version
 
       - name: PaC scan with Conftest when policies exist
         run: |
