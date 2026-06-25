@@ -6,11 +6,13 @@ description: >-
   A rootless Kubernetes DevSecOps lab that combines GitOps, service mesh,
   secrets management, network policy, and the DevSecOps Security Scanning
   Pipeline as part of a controlled Secure SDLC practice environment.
-image: '@assets/projects/self-hosted-devsecops-lab/Homelab-DevSecOps.webp'
+image: '@assets/projects/self-hosted-devsecops-lab/self-hosted-devsecops-homelab.webp'
 imageAlt: >-
   Self-hosted DevSecOps homelab architecture with rootless kind Kubernetes,
   GitHub CI/CD, Flux GitOps, secret management, sandbox testing,
   vulnerability management, and integrated security scanning.
+imageWidth: 1490
+imageHeight: 840
 imageDisplay: cover
 startDate: 2026-05-01
 skills:

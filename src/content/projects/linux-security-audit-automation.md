@@ -3,11 +3,13 @@ title: Linux Security Audit Automation
 description: >-
   A Linux security reporting project that turns periodic host checks into
   repeatable text and HTML reports with optional email delivery.
-image: '@assets/projects/linux-security-audit-automation/VM Security Audit Automation.webp'
+image: '@assets/projects/linux-security-audit-automation/linux-security-audit-automation.webp'
 imageAlt: >-
   Linux security audit automation dashboard for virtual machine hardening,
   Lynis checks, Fail2ban status, auditd review, package integrity, account
   hygiene, and automated host security reporting.
+imageWidth: 750
+imageHeight: 380
 imageDisplay: diagram
 startDate: 2026-05-01
 skills:

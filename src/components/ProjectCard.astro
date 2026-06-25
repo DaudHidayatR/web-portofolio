@@ -40,6 +40,8 @@ function formatPeriod(startDate: Date, endDate?: Date) {
             class="h-auto w-full"
             width={900}
             height={306}
+            loading="lazy"
+            decoding="async"
           />
         </figure>
       ) : (
@@ -50,6 +52,8 @@ function formatPeriod(startDate: Date, endDate?: Date) {
             class="h-full w-full object-cover"
             width={600}
             height={400}
+            loading="lazy"
+            decoding="async"
           />
         </figure>
       )

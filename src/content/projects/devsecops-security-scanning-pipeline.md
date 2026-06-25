@@ -4,11 +4,13 @@ description: >-
   A public Secure SDLC and DevSecOps boilerplate for running repeatable security
   checks with SAST, secret scanning, dependency scanning, container scanning,
   SBOM generation, and IaC policy validation.
-image: '@assets/projects/devsecops-security-scanning-pipeline/DevSecOps-pipeline.webp'
+image: '@assets/projects/devsecops-security-scanning-pipeline/devsecops-security-scanning-pipeline.webp'
 imageAlt: >-
   DevSecOps CI/CD security scanning pipeline architecture using GitHub,
   Trivy, Semgrep, GitLeaks, Syft SBOM, Kyverno, Conftest, Cosign, Sigstore,
   SLSA provenance, DAST, and Kubernetes staging deployment.
+imageWidth: 1441
+imageHeight: 461
 imageDisplay: diagram
 startDate: 2026-05-01
 skills:

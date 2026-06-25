@@ -11,6 +11,8 @@ interface Props {
 	endDate?: Date;
 	image: any;
 	imageAlt?: string;
+	imageWidth?: number;
+	imageHeight?: number;
 	imageDisplay?: "cover" | "diagram";
 	skills: string[];
 	demoLink?: string;
@@ -24,6 +26,8 @@ const {
 	endDate,
 	image,
 	imageAlt,
+	imageWidth,
+	imageHeight,
 	imageDisplay = "cover",
 	skills,
 	demoLink,
@@ -64,6 +68,8 @@ function calculateDuration(startDate: Date, endDate?: Date) {
 const origin = Astro.site?.origin ?? Astro.url.origin;
 const ogImageUrl = image ? new URL(image.src, origin).href : undefined;
 const projectImageAlt = imageAlt ?? `${title} project architecture`;
+const projectImageWidth = imageWidth ?? image?.width;
+const projectImageHeight = imageHeight ?? image?.height;
 const isDiagramImage = imageDisplay === "diagram";
 const canonicalUrl = new URL(Astro.url.pathname, origin).href;
 const projectKeywords = skills ?? [];
@@ -87,7 +93,11 @@ const projectJsonLd = {
 				? {
 						"@type": "ImageObject",
 						url: ogImageUrl,
+						contentUrl: ogImageUrl,
 						caption: projectImageAlt,
+						width: projectImageWidth,
+						height: projectImageHeight,
+						representativeOfPage: true,
 					}
 				: undefined,
 			author: { "@id": `${origin}/#person` },
@@ -120,7 +130,14 @@ const projectJsonLd = {
 };
 ---
 
-<Layout title={title} description={description} ogImage={ogImageUrl}>
+<Layout
+  title={title}
+  description={description}
+  ogImage={ogImageUrl}
+  ogImageAlt={projectImageAlt}
+  ogImageWidth={projectImageWidth}
+  ogImageHeight={projectImageHeight}
+>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(projectJsonLd)} />
   <article class="max-w-4xl mx-auto px-4 py-20">
     <!-- Back button -->
@@ -159,16 +176,20 @@ const projectJsonLd = {
                 src={image}
                 alt={projectImageAlt}
                 class="h-auto w-full p-2"
-                width={1450}
-                height={494}
+                width={projectImageWidth ?? 1450}
+                height={projectImageHeight ?? 494}
+                loading="eager"
+                decoding="async"
               />
             ) : (
               <Image
                 src={image}
                 alt={projectImageAlt}
                 class="w-full aspect-video object-cover"
-                width={1200}
-                height={630}
+                width={projectImageWidth ?? 1200}
+                height={projectImageHeight ?? 630}
+                loading="eager"
+                decoding="async"
               />
             )}
           </button>
@@ -193,8 +214,10 @@ const projectJsonLd = {
               src={image}
               alt={projectImageAlt}
               class="max-h-[82vh] w-full rounded-xl object-contain"
-              width={1600}
-              height={900}
+              width={projectImageWidth ?? 1600}
+              height={projectImageHeight ?? 900}
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <form method="dialog" class="modal-backdrop">
