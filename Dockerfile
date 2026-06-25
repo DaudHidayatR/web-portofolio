@@ -5,8 +5,7 @@ COPY . .
 RUN if [ -f bun.lock ]; then bun install --frozen-lockfile; else bun install; fi
 RUN bun run build
 
-FROM nginxinc/nginx-unprivileged:1.29-alpine
+FROM cgr.dev/chainguard/nginx:latest
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
