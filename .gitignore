@@ -21,3 +21,4 @@ bun-debug.log*
 
 # jetbrains setting folder
 .idea/
+.github/

@@ -91,6 +91,8 @@ const projects = defineCollection({
 			title: z.string(),
 			description: z.string(),
 			image: image(),
+			imageAlt: z.string().optional(),
+			imageDisplay: z.enum(["cover", "diagram"]).optional().default("cover"),
 			startDate: z.coerce.date(),
 			endDate: z.coerce.date().optional(),
 			skills: z.array(z.string()),

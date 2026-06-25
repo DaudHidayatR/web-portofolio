@@ -10,6 +10,8 @@ interface Props {
 }
 
 const { project, categoryLabel } = Astro.props;
+const imageAlt = project.data.imageAlt ?? `${project.data.title} project architecture`;
+const isDiagram = project.data.imageDisplay === "diagram";
 
 function formatPeriod(startDate: Date, endDate?: Date) {
 	const options: Intl.DateTimeFormatOptions = {
@@ -24,20 +26,34 @@ function formatPeriod(startDate: Date, endDate?: Date) {
 }
 ---
 
-<article class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+<article class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow overflow-hidden">
   <a
     class="hover:opacity-80 transition-opacity"
     href={`/projects/${project.id}`}
   >
-    <figure class="aspect-video">
-      <Image
-        src={project.data.image}
-        alt={project.data.title}
-        class="w-full h-full object-cover"
-        width={600}
-        height={400}
-      />
-    </figure>
+    {
+      isDiagram ? (
+        <figure class="bg-base-200 p-1">
+          <Image
+            src={project.data.image}
+            alt={imageAlt}
+            class="h-auto w-full"
+            width={900}
+            height={306}
+          />
+        </figure>
+      ) : (
+        <figure class="aspect-video bg-base-200">
+          <Image
+            src={project.data.image}
+            alt={imageAlt}
+            class="h-full w-full object-cover"
+            width={600}
+            height={400}
+          />
+        </figure>
+      )
+    }
   </a>
   <div class="card-body">
     <h3 class="card-title hover:text-primary transition-colors">

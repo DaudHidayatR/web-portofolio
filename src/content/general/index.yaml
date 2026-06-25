@@ -1,6 +1,6 @@
 projectsLayout: tabs-horizontal
 enableThemeSelector: true
-extraLinksEnabled: true
+extraLinksEnabled: false
 extraLinks:
   - link: /projects
     icon: Briefcase
@@ -20,7 +20,7 @@ extraLinks:
     displayOn: both
 showAboutSection: true
 showProjectsSection: true
-showBlogSection: true
+showBlogSection: false
 showWorkSection: true
 showEducationSection: true
 showHackathonsSection: false

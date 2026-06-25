@@ -10,6 +10,8 @@ interface Props {
 	startDate: Date;
 	endDate?: Date;
 	image: any;
+	imageAlt?: string;
+	imageDisplay?: "cover" | "diagram";
 	skills: string[];
 	demoLink?: string;
 	sourceLink?: string;
@@ -21,6 +23,8 @@ const {
 	startDate,
 	endDate,
 	image,
+	imageAlt,
+	imageDisplay = "cover",
 	skills,
 	demoLink,
 	sourceLink,
@@ -59,9 +63,65 @@ function calculateDuration(startDate: Date, endDate?: Date) {
 // OG image URL for per-page social sharing
 const origin = Astro.site?.origin ?? Astro.url.origin;
 const ogImageUrl = image ? new URL(image.src, origin).href : undefined;
+const projectImageAlt = imageAlt ?? `${title} project architecture`;
+const isDiagramImage = imageDisplay === "diagram";
+const canonicalUrl = new URL(Astro.url.pathname, origin).href;
+const projectKeywords = skills ?? [];
+const languageMap: Record<string, string[]> = {
+	"DevSecOps Security Scanning Pipeline": ["Shell", "YAML"],
+	"Self-Hosted DevSecOps Lab": ["YAML", "Shell"],
+	"Linux Security Audit Automation": ["Shell", "Python"],
+};
+const programmingLanguage = languageMap[title] ?? skills;
+const projectJsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebPage",
+			"@id": `${canonicalUrl}#webpage`,
+			url: canonicalUrl,
+			name: title,
+			description,
+			image: ogImageUrl,
+			primaryImageOfPage: ogImageUrl
+				? {
+						"@type": "ImageObject",
+						url: ogImageUrl,
+						caption: projectImageAlt,
+					}
+				: undefined,
+			author: { "@id": `${origin}/#person` },
+			about: { "@id": `${canonicalUrl}#software` },
+		},
+		{
+			"@type": "SoftwareSourceCode",
+			"@id": `${canonicalUrl}#software`,
+			name: title,
+			description,
+			codeRepository: sourceLink,
+			programmingLanguage,
+			keywords: projectKeywords,
+			dateCreated: startDate.toISOString().slice(0, 10),
+			dateModified: (endDate ?? new Date()).toISOString().slice(0, 10),
+			creator: { "@id": `${origin}/#person` },
+		},
+		{
+			"@type": "Person",
+			"@id": `${origin}/#person`,
+			name: "Daud Hidayat Ramadhan",
+			url: origin,
+			jobTitle: "DevSecOps & Backend Engineer",
+			sameAs: [
+				"https://github.com/DaudHidayatR",
+				"https://www.linkedin.com/in/daud-hidayat-ramadhan",
+			],
+		},
+	],
+};
 ---
 
 <Layout title={title} description={description} ogImage={ogImageUrl}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(projectJsonLd)} />
   <article class="max-w-4xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">
@@ -87,15 +147,60 @@ const ogImageUrl = image ? new URL(image.src, origin).href : undefined;
     <!-- TODO: Future Enhancement - Support multiple images/project gallery -->
     {
       image && (
-        <figure class="mb-8 rounded-2xl overflow-hidden">
-          <Image
-            src={image}
-            alt={title}
-            class="w-full aspect-video object-cover"
-            width={1200}
-            height={630}
-          />
+        <figure class="mb-8 rounded-2xl overflow-hidden bg-base-200">
+          <button
+            type="button"
+            class="block w-full cursor-zoom-in"
+            aria-label={`Zoom image: ${projectImageAlt}`}
+            data-project-image-open
+          >
+            {isDiagramImage ? (
+              <Image
+                src={image}
+                alt={projectImageAlt}
+                class="h-auto w-full p-2"
+                width={1450}
+                height={494}
+              />
+            ) : (
+              <Image
+                src={image}
+                alt={projectImageAlt}
+                class="w-full aspect-video object-cover"
+                width={1200}
+                height={630}
+              />
+            )}
+          </button>
         </figure>
+      )
+    }
+
+    {
+      image && (
+        <dialog
+          class="modal backdrop:bg-black/80"
+          aria-label={`Zoomed image: ${projectImageAlt}`}
+          data-project-image-dialog
+        >
+          <div class="modal-box max-w-[96vw] bg-base-100 p-3 shadow-2xl">
+            <form method="dialog" class="mb-3 flex justify-end">
+              <button class="btn btn-circle btn-sm" aria-label="Close image zoom">
+                x
+              </button>
+            </form>
+            <Image
+              src={image}
+              alt={projectImageAlt}
+              class="max-h-[82vh] w-full rounded-xl object-contain"
+              width={1600}
+              height={900}
+            />
+          </div>
+          <form method="dialog" class="modal-backdrop">
+            <button aria-label="Close image zoom">close</button>
+          </form>
+        </dialog>
       )
     }
 
@@ -191,5 +296,15 @@ const ogImageUrl = image ? new URL(image.src, origin).href : undefined;
       <a href="/projects" class="btn btn-primary"> View All Projects </a>
     </div>
   </article>
-</Layout>
 
+  <script is:inline>
+    const imageOpenButton = document.querySelector("[data-project-image-open]");
+    const imageDialog = document.querySelector("[data-project-image-dialog]");
+
+    imageOpenButton?.addEventListener("click", () => {
+      if (imageDialog instanceof HTMLDialogElement) {
+        imageDialog.showModal();
+      }
+    });
+  </script>
+</Layout>

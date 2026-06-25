@@ -31,9 +31,52 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
 // OG image URL for per-page social sharing
 const origin = Astro.site?.origin ?? Astro.url.origin;
 const ogImageUrl = image ? new URL(image.src, origin).href : undefined;
+const canonicalUrl = new URL(Astro.url.pathname, origin).href;
+const articleJsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebPage",
+			"@id": `${canonicalUrl}#webpage`,
+			url: canonicalUrl,
+			name: title,
+			description,
+			image: ogImageUrl,
+			author: { "@id": `${origin}/#person` },
+			about: tags ?? [],
+		},
+		{
+			"@type": ["BlogPosting", "TechArticle"],
+			"@id": `${canonicalUrl}#article`,
+			headline: title,
+			description,
+			image: ogImageUrl,
+			url: canonicalUrl,
+			datePublished: publishDate.toISOString(),
+			dateModified: (updatedDate ?? publishDate).toISOString(),
+			author: { "@id": `${origin}/#person` },
+			publisher: { "@id": `${origin}/#person` },
+			keywords: tags ?? [],
+			wordCount,
+			inLanguage: "en",
+		},
+		{
+			"@type": "Person",
+			"@id": `${origin}/#person`,
+			name: "Daud Hidayat Ramadhan",
+			url: origin,
+			jobTitle: "DevSecOps & Backend Engineer",
+			sameAs: [
+				"https://github.com/DaudHidayatR",
+				"https://www.linkedin.com/in/daud-hidayat-ramadhan",
+			],
+		},
+	],
+};
 ---
 
 <Layout title={title} description={description} ogImage={ogImageUrl}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
   <article class="max-w-4xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">

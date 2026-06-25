@@ -29,7 +29,7 @@ The website should not be only a resume. Each article should connect a technical
 The first content series will follow the project strategy already documented in this repository:
 
 1. Self-hosting a DevSecOps lab with Kubernetes, Istio, and OpenBao.
-2. Building lightweight security scanning workflows with serverless tools.
+2. Building CI/CD security scanning workflows for Secure SDLC practice.
 3. Writing secure REST API middleware patterns in Go.
 4. Automating pre-deployment security reviews.
 5. Turning Linux security audits into repeatable CI/CD checks.
