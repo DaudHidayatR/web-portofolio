@@ -1,0 +1,255 @@
+name: Pre-Deploy Security Pipeline
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  APP_DIR: .
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/web-portofolio
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+  id-token: write
+  attestations: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-artifact-sca-sbom:
+    name: Stage 1 - Build Artifact, SCA, SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          if [ -f bun.lock ]; then
+            bun install --frozen-lockfile
+          else
+            bun install
+          fi
+
+      - name: Build web artifact
+        working-directory: ${{ env.APP_DIR }}
+        run: bun run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-portofolio-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: SCA scan with Trivy
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: ${{ env.APP_DIR }}
+          format: sarif
+          output: trivy-sca.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: 1
+
+      - name: Upload Trivy SCA SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-sca.sarif
+
+      - name: Create SBOM with Syft
+        uses: anchore/sbom-action@v0
+        with:
+          path: ${{ env.APP_DIR }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-spdx
+          path: sbom.spdx.json
+          if-no-files-found: error
+
+  software-testing:
+    name: Stage 2 - SAST, Unit Test, Image Scan
+    runs-on: ubuntu-latest
+    needs: build-artifact-sca-sbom
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          if [ -f bun.lock ]; then
+            bun install --frozen-lockfile
+          else
+            bun install
+          fi
+
+      - name: SAST scan with Semgrep
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/default
+            p/javascript
+            p/typescript
+            p/secrets
+
+      - name: Run unit tests when present
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          if bun run | grep -Eq '^\s+test\b'; then
+            bun run test
+          else
+            echo "No test script found; skipping unit tests."
+          fi
+
+      - name: Set lowercase image name
+        id: image
+        run: echo "name=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      - name: Build container image for scanning
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          load: true
+          tags: ${{ steps.image.outputs.name }}:${{ github.sha }}
+
+      - name: Image scan with Trivy
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ steps.image.outputs.name }}:${{ github.sha }}
+          format: sarif
+          output: trivy-image.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: 1
+
+      - name: Upload Trivy image SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-image.sarif
+
+  supply-chain-state:
+    name: Stage 3 - PaC, SLSA, Image Signing
+    runs-on: ubuntu-latest
+    needs: software-testing
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set lowercase image name
+        id: image
+        run: echo "name=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      - name: Install Conftest
+        uses: open-policy-agent/setup-conftest@v1
+
+      - name: PaC scan with Conftest when policies exist
+        run: |
+          if compgen -G "policies/*.rego" > /dev/null; then
+            find . -type f \( -name '*.yaml' -o -name '*.yml' -o -name '*.json' \) \
+              -not -path './node_modules/*' \
+              -not -path './dist/*' \
+              -not -path './.astro/*' \
+              -print0 | xargs -0 conftest test --policy policies
+          else
+            echo "No Rego policies found in policies/*.rego; skipping Conftest."
+          fi
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
+
+      - name: PaC scan with Kyverno when policies exist
+        run: |
+          if compgen -G "kyverno-policies/*.yaml" > /dev/null || compgen -G "kyverno-policies/*.yml" > /dev/null; then
+            mapfile -t resources < <(find . -type f \( -name '*.yaml' -o -name '*.yml' \) \
+              -not -path './node_modules/*' \
+              -not -path './dist/*' \
+              -not -path './.astro/*' \
+              -not -path './kyverno-policies/*')
+            if [ "${#resources[@]}" -gt 0 ]; then
+              kyverno apply kyverno-policies --resource "${resources[@]}"
+            else
+              echo "No YAML resources found for Kyverno."
+            fi
+          else
+            echo "No Kyverno policies found in kyverno-policies/; skipping Kyverno."
+          fi
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image with provenance and SBOM
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          provenance: true
+          sbom: true
+          tags: |
+            ${{ steps.image.outputs.name }}:${{ github.sha }}
+            ${{ steps.image.outputs.name }}:latest
+
+      - name: Create SLSA provenance attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ steps.image.outputs.name }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign image with Cosign keyless Sigstore
+        run: cosign sign --yes "${{ steps.image.outputs.name }}@${{ steps.push.outputs.digest }}"
+
+  deploy-cloudflare:
+    name: Deploy - Cloudflare Pages
+    runs-on: ubuntu-latest
+    needs: supply-chain-state
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-portofolio-dist
+          path: dist
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME }} --branch=${{ github.ref_name }}
