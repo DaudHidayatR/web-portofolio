@@ -8,7 +8,12 @@ import { defineConfig } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
 	site: "https://daudhr.com",
-	integrations: [sitemap(), svelte()],
+	integrations: [
+		sitemap({
+			filter: (page) => !page.endsWith("/blog/"),
+		}),
+		svelte(),
+	],
 
 	vite: {
 		plugins: [tailwindcss()],

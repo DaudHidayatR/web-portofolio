@@ -21,8 +21,8 @@ interface Props {
 }
 
 const {
-	title = "Daud Hidayat Ramadhan — DevSecOps & Backend Engineer",
-	description = "DevSecOps & Backend portfolio of Daud Hidayat Ramadhan, focused on Secure SDLC, CI/CD security, backend services, REST API security, Kubernetes, OpenBao, SAST, dependency scanning, and secret scanning.",
+	title = "Daud Hidayat Ramadhan | DevSecOps & Backend Engineer Portfolio",
+	description = "DevSecOps and Backend Engineer portfolio focused on Secure SDLC, CI/CD security, REST APIs, Kubernetes, and automation.",
 	ogImage,
 	ogImageAlt = description,
 	ogImageWidth,
@@ -53,12 +53,18 @@ const pageTransition = {
 const origin = Astro.site?.origin ?? Astro.url.origin;
 const canonicalUrl = new URL(Astro.url.pathname, origin);
 const ogImageUrl = ogImage ?? new URL("/images/og_home.png", origin).href;
-const siteJsonLd = {
-	"@context": "https://schema.org",
+const personJsonLd = {
 	"@type": "Person",
+	"@id": `${origin}/#person`,
 	name: "Daud Hidayat Ramadhan",
 	url: origin,
+	email: "mailto:daud28ramadhan@gmail.com",
 	jobTitle: "DevSecOps & Backend Engineer",
+	nationality: "Indonesian",
+	alumniOf: {
+		"@type": "CollegeOrUniversity",
+		name: "Universitas Islam Indonesia",
+	},
 	sameAs: [
 		"https://github.com/DaudHidayatR",
 		"https://www.linkedin.com/in/daud-hidayat-ramadhan",
@@ -79,6 +85,32 @@ const siteJsonLd = {
 		"Secret Scanning",
 	],
 };
+const siteJsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		personJsonLd,
+		{
+			"@type": "WebSite",
+			"@id": `${origin}/#website`,
+			url: origin,
+			name: "Daud Hidayat Ramadhan Portfolio",
+			description,
+			publisher: { "@id": `${origin}/#person` },
+			inLanguage: "en",
+		},
+		{
+			"@type": "ProfilePage",
+			"@id": `${canonicalUrl.href}#profile`,
+			url: canonicalUrl.href,
+			name: title,
+			description,
+			isPartOf: { "@id": `${origin}/#website` },
+			about: { "@id": `${origin}/#person` },
+			primaryImageOfPage: ogImageUrl,
+			inLanguage: "en",
+		},
+	],
+};
 ---
 
 <!doctype html>
@@ -91,8 +123,9 @@ const siteJsonLd = {
     <link rel="canonical" href={canonicalUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="alternate" type="application/rss+xml" title={`${title} RSS`} href="/rss.xml" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
+    <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 

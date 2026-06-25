@@ -23,3 +23,5 @@ bun-debug.log*
 .idea/
 # .github/
 CLOUDFLARE_OPTIMIZATION_PLAN*
+SEO*
+SEO_OPTIMIZATION_PLAN.md

@@ -31,7 +31,7 @@ const { hero } = Astro.props;
           typeof hero.avatar === "string" ? (
             <img src={hero.avatar} alt={hero.name} class="h-full w-full object-cover object-top" />
           ) : (
-            <Image src={hero.avatar} alt={hero.name} class="h-full w-full object-cover object-top" />
+            <Image src={hero.avatar} alt={hero.name} class="h-full w-full object-cover object-top" loading="eager" decoding="async" />
           )
         }
       </figure>

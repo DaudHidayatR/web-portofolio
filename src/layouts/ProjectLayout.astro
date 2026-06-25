@@ -73,6 +73,15 @@ const projectImageHeight = imageHeight ?? image?.height;
 const isDiagramImage = imageDisplay === "diagram";
 const canonicalUrl = new URL(Astro.url.pathname, origin).href;
 const projectKeywords = skills ?? [];
+const seoTitleMap: Record<string, string> = {
+	"DevSecOps Security Scanning Pipeline":
+		"DevSecOps Security Scanning Pipeline | Secure SDLC Project",
+	"Self-Hosted DevSecOps Lab":
+		"Self-Hosted DevSecOps Lab | Kubernetes Security Portfolio",
+	"Linux Security Audit Automation":
+		"Linux Security Audit Automation | Host Hardening Project",
+};
+const seoTitle = seoTitleMap[title] ?? `${title} | DevSecOps Project`;
 const languageMap: Record<string, string[]> = {
 	"DevSecOps Security Scanning Pipeline": ["Shell", "YAML"],
 	"Self-Hosted DevSecOps Lab": ["YAML", "Shell"],
@@ -131,7 +140,7 @@ const projectJsonLd = {
 ---
 
 <Layout
-  title={title}
+  title={seoTitle}
   description={description}
   ogImage={ogImageUrl}
   ogImageAlt={projectImageAlt}

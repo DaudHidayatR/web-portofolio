@@ -10,7 +10,8 @@ interface Props {
 }
 
 const { project, categoryLabel } = Astro.props;
-const imageAlt = project.data.imageAlt ?? `${project.data.title} project architecture`;
+const imageAlt =
+	project.data.imageAlt ?? `${project.data.title} project architecture`;
 const isDiagram = project.data.imageDisplay === "diagram";
 
 function formatPeriod(startDate: Date, endDate?: Date) {
@@ -30,6 +31,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
   <a
     class="hover:opacity-80 transition-opacity"
     href={`/projects/${project.id}`}
+    aria-label={`View ${project.data.title} project details`}
   >
     {
       isDiagram ? (
@@ -111,8 +113,13 @@ function formatPeriod(startDate: Date, endDate?: Date) {
         )
       }
       <div class="tooltip" data-tip="View project details">
-        <a href={`/projects/${project.id}`} class="btn btn-sm btn-primary">
+        <a
+          href={`/projects/${project.id}`}
+          class="btn btn-sm btn-primary"
+          aria-label={`View ${project.data.title} project details`}
+        >
           <Eye class="size-4" />
+          <span class="sr-only">View {project.data.title} project details</span>
         </a>
       </div>
     </div>

@@ -11,6 +11,7 @@ interface Props {
 }
 
 const { title, photo, Content, link } = Astro.props;
+const photoAlt = "Daud Hidayat Ramadhan, DevSecOps and Backend Engineer";
 ---
 
 <section id="about" class="py-12 sm:py-16 px-4">
@@ -22,14 +23,18 @@ const { title, photo, Content, link } = Astro.props;
             {typeof photo === "string" ? (
               <img
                 src={photo}
-                alt={title}
+                alt={photoAlt}
                 class="h-72 w-full object-cover object-top lg:h-full"
               />
             ) : (
               <Image
                 src={photo}
-                alt={title}
+                alt={photoAlt}
                 class="h-72 w-full object-cover object-top lg:h-full"
+                width={480}
+                height={720}
+                loading="lazy"
+                decoding="async"
               />
             )}
           </figure>

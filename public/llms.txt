@@ -1,0 +1,44 @@
+# Daud Hidayat Ramadhan
+
+> DevSecOps and Backend Engineer portfolio focused on Secure SDLC, CI/CD security, REST APIs, Kubernetes, security automation, and practical delivery workflows.
+
+## Site
+
+- Home: https://daudhr.com/
+- Projects: https://daudhr.com/projects/
+- Sitemap: https://daudhr.com/sitemap-index.xml
+
+## Key Topics
+
+- DevSecOps
+- Backend Engineering
+- Secure SDLC
+- CI/CD Security
+- REST API Security
+- Kubernetes Security
+- SAST
+- Dependency Scanning
+- Container Scanning
+- Secret Scanning
+- SBOM
+- Trivy
+- Semgrep
+- Syft
+- Cosign
+- Sigstore
+- SLSA Provenance
+
+## Important Pages
+
+- https://daudhr.com/projects/devsecops-security-scanning-pipeline/
+- https://daudhr.com/projects/self-hosted-devsecops-lab/
+- https://daudhr.com/projects/linux-security-audit-automation/
+
+## Entity
+
+Daud Hidayat Ramadhan is a DevSecOps and Backend Engineer based in Indonesia. The portfolio documents secure backend systems, Secure SDLC practices, CI/CD security pipelines, Kubernetes labs, Linux security automation, and security-aware delivery workflows.
+
+## Profiles
+
+- GitHub: https://github.com/DaudHidayatR
+- LinkedIn: https://www.linkedin.com/in/daud-hidayat-ramadhan

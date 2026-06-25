@@ -146,12 +146,16 @@ const entriesWithContent = await Promise.all(
                                                 )}
                                                 <div class="flex-1">
                                                     <h3 class="card-title">
-                                                        {entry.data.title}
+                                                        {collection === "work"
+                                                            ? entry.data.subtitle
+                                                            : entry.data.title}
                                                     </h3>
                                                     <p
                                                         class={`text-${color} font-semibold`}
                                                     >
-                                                        {entry.data.subtitle}
+                                                        {collection === "work"
+                                                            ? entry.data.title
+                                                            : entry.data.subtitle}
                                                     </p>
                                                     {entry.data.location && (
                                                         <p class="text-sm text-base-content/60">
@@ -195,12 +199,16 @@ const entriesWithContent = await Promise.all(
                                     )}
                                     <div>
                                         <h3 class="font-bold text-xl">
-                                            {entry.data.title}
+                                            {collection === "work"
+                                                ? entry.data.subtitle
+                                                : entry.data.title}
                                         </h3>
                                         <p
                                             class={`text-${color} font-semibold`}
                                         >
-                                            {entry.data.subtitle}
+                                            {collection === "work"
+                                                ? entry.data.title
+                                                : entry.data.subtitle}
                                         </p>
                                         {entry.data.location && (
                                             <p class="text-sm text-base-content/60">
@@ -290,12 +298,16 @@ const entriesWithContent = await Promise.all(
 
                                         <div class="min-w-0">
                                             <h3 class="font-bold text-lg">
-                                                {entry.data.title}
+                                                {collection === "work"
+                                                    ? entry.data.subtitle
+                                                    : entry.data.title}
                                             </h3>
                                             <p
                                                 class={`text-${color} font-semibold text-sm`}
                                             >
-                                                {entry.data.subtitle}
+                                                {collection === "work"
+                                                    ? entry.data.title
+                                                    : entry.data.subtitle}
                                             </p>
                                         </div>
 
@@ -328,6 +340,7 @@ const entriesWithContent = await Promise.all(
                                             <a
                                                 href={entry.data.link}
                                                 target="_blank"
+                                                rel="noopener noreferrer"
                                                 class="link link-hover"
                                             >
                                                 {collection === "work"
