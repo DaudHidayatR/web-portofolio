@@ -128,6 +128,15 @@ const siteJsonLd = {
     <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <meta name="generator" content={Astro.generator} />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-67YE3ZCP1V"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-67YE3ZCP1V');
+    </script>
     <title>{title}</title>
 
     <!-- View Transitions -->
