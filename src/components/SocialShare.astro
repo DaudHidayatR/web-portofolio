@@ -1,0 +1,60 @@
+---
+import { Mail, MessageCircle, Send, Share2 } from "@lucide/astro";
+import LinkedIn from "./icons/LinkedIn.astro";
+
+const origin = Astro.site?.origin ?? Astro.url.origin;
+const pageUrl = new URL(Astro.url.pathname, origin).href;
+const shareTitle = "Daud Hidayat Ramadhan | DevSecOps & Backend Engineer";
+const shareText =
+	"DevSecOps and Backend Engineering portfolio covering Secure SDLC, CI/CD security, REST APIs, Kubernetes, and automation.";
+
+const encodedUrl = encodeURIComponent(pageUrl);
+const encodedTitle = encodeURIComponent(shareTitle);
+const encodedText = encodeURIComponent(shareText);
+
+const shareLinks = [
+	{
+		label: "Share on LinkedIn",
+		href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+		Icon: LinkedIn,
+	},
+	{
+		label: "Share on X",
+		href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+		Icon: Send,
+	},
+	{
+		label: "Share on WhatsApp",
+		href: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
+		Icon: MessageCircle,
+	},
+	{
+		label: "Share by Email",
+		href: `mailto:?subject=${encodedTitle}&body=${encodedText}%0A%0A${encodedUrl}`,
+		Icon: Mail,
+	},
+];
+---
+
+<div aria-labelledby="share-title" class="mt-6 flex flex-col items-center gap-3">
+	<div class="flex items-center gap-2 text-base-content/70">
+		<Share2 class="size-4" aria-hidden="true" />
+		<h2 id="share-title" class="text-sm font-semibold uppercase tracking-wide">
+			Share portfolio
+		</h2>
+	</div>
+	<nav aria-label="Social sharing options" class="flex flex-wrap justify-center gap-2">
+		{shareLinks.map(({ label, href, Icon }) => (
+			<a
+				href={href}
+				target="_blank"
+				rel="noopener noreferrer nofollow"
+				class="btn btn-xs btn-outline gap-1.5"
+				aria-label={label}
+			>
+				<Icon class="size-3.5" aria-hidden="true" />
+				<span>{label.replace("Share on ", "")}</span>
+			</a>
+		))}
+	</nav>
+</div>

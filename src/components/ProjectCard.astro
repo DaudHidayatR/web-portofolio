@@ -7,12 +7,12 @@ import SkillBadge from "./SkillBadge.astro";
 interface Props {
 	project: CollectionEntry<"projects">;
 	categoryLabel?: string;
+	imageLoading?: "eager" | "lazy";
 }
 
-const { project, categoryLabel } = Astro.props;
+const { project, categoryLabel, imageLoading = "lazy" } = Astro.props;
 const imageAlt =
 	project.data.imageAlt ?? `${project.data.title} project architecture`;
-const isDiagram = project.data.imageDisplay === "diagram";
 
 function formatPeriod(startDate: Date, endDate?: Date) {
 	const options: Intl.DateTimeFormatOptions = {
@@ -28,39 +28,17 @@ function formatPeriod(startDate: Date, endDate?: Date) {
 ---
 
 <article class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow overflow-hidden">
-  <a
-    class="hover:opacity-80 transition-opacity"
-    href={`/projects/${project.id}`}
-    aria-label={`View ${project.data.title} project details`}
-  >
-    {
-      isDiagram ? (
-        <figure class="bg-base-200 p-1">
-          <Image
-            src={project.data.image}
-            alt={imageAlt}
-            class="h-auto w-full"
-            width={900}
-            height={306}
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-      ) : (
-        <figure class="aspect-video bg-base-200">
-          <Image
-            src={project.data.image}
-            alt={imageAlt}
-            class="h-full w-full object-cover"
-            width={600}
-            height={400}
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-      )
-    }
-  </a>
+  <figure class="aspect-video bg-base-200">
+        <Image
+          src={project.data.image}
+          alt={imageAlt}
+          class="h-full w-full object-cover"
+          width={600}
+          height={400}
+          loading={imageLoading}
+          decoding="async"
+        />
+      </figure>
   <div class="card-body">
     <h3 class="card-title hover:text-primary transition-colors">
       <a href={`/projects/${project.id}`}>{project.data.title}</a>

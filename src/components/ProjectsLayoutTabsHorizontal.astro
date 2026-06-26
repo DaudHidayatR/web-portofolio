@@ -85,10 +85,11 @@ const allTabs = [
           <p class="text-base-content/60 mb-6">{tab.description}</p>
         )}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {tab.projects.map((project) => (
+          {tab.projects.map((project, projectIndex) => (
             <ProjectCard
               project={project}
               categoryLabel={getProjectCategoryLabel(project, tab.slug)}
+              imageLoading={index === 0 && projectIndex === 0 ? "eager" : "lazy"}
             />
           ))}
         </div>

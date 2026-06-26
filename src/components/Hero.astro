@@ -71,7 +71,8 @@ const { hero } = Astro.props;
                   class="btn btn-circle btn-primary lg:btn-ghost"
                   aria-label={link.label}
                 >
-                  <IconComponent class="size-6" />
+                  <IconComponent class="size-6" aria-hidden="true" />
+                  <span class="sr-only">{link.label}</span>
                 </a>
               </div>
             );

@@ -35,8 +35,12 @@ const { categoryGroups, uncategorizedProjects } = Astro.props;
         )}
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {category.projects.map((project) => (
-          <ProjectCard project={project} categoryLabel={category.title} />
+        {category.projects.map((project, projectIndex) => (
+          <ProjectCard
+            project={project}
+            categoryLabel={category.title}
+            imageLoading={projectIndex === 0 ? "eager" : "lazy"}
+          />
         ))}
       </div>
     </section>
@@ -53,8 +57,11 @@ const { categoryGroups, uncategorizedProjects } = Astro.props;
         </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {uncategorizedProjects.map((project) => (
-          <ProjectCard project={project} />
+        {uncategorizedProjects.map((project, projectIndex) => (
+          <ProjectCard
+            project={project}
+            imageLoading={projectIndex === 0 ? "eager" : "lazy"}
+          />
         ))}
       </div>
     </section>

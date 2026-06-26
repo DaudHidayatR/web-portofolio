@@ -13,6 +13,6 @@ skills:
   - Go
   - Angular
 ---
-- Developed a web-based vulnerability assessment management system for SOC/CISRT workflows, helping centralize security findings and follow-up tracking.
+- Built full-stack features for SOC/CISRT vulnerability intake, triage, and remediation tracking across internal security workflows.
 - Automated a domain unblock request workflow with form-based intake and Google Apps Script integration, reducing manual request handling.
 - Collaborated around operational security requirements while keeping implementation details sanitized for public documentation.

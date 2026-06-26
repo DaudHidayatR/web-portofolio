@@ -1,6 +1,7 @@
 ---
 import { getEntry, render } from "astro:content";
 import { getIcon } from "../utils/iconMapper";
+import SocialShare from "./SocialShare.astro";
 
 const contactEntry = await getEntry("contact", "index");
 const contact = contactEntry.data;
@@ -25,6 +26,7 @@ const FooterIcon = getIcon(contact.footerIcon as any);
       </a>
       and I'll respond whenever I can.
     </p>
+    <SocialShare />
     <p class="flex items-center space-x-1 text-base-content/60">
       <span>Copyright © {new Date().getFullYear()} - {contact.footerText}</span>
       <a
