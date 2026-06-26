@@ -5,15 +5,31 @@ import Layout from "./Layout.astro";
 
 interface Props {
 	title: string;
+	seoTitle?: string;
 	description: string;
 	publishDate: Date;
 	updatedDate?: Date;
 	image: any;
+	imageAlt?: string;
+	imageWidth?: number;
+	imageHeight?: number;
 	tags?: string[];
 }
 
-const { title, description, publishDate, updatedDate, image, tags } =
-	Astro.props;
+const {
+	title,
+	seoTitle,
+	description,
+	publishDate,
+	updatedDate,
+	image,
+	imageAlt,
+	imageWidth = 1200,
+	imageHeight = 630,
+	tags,
+} = Astro.props;
+const pageTitle = seoTitle ?? title;
+const featuredImageAlt = imageAlt ?? `${title} article featured image`;
 
 function formatDate(date: Date) {
 	return date.toLocaleDateString("en-US", {
@@ -39,7 +55,7 @@ const articleJsonLd = {
 			"@type": "WebPage",
 			"@id": `${canonicalUrl}#webpage`,
 			url: canonicalUrl,
-			name: title,
+			name: pageTitle,
 			description,
 			image: ogImageUrl,
 			author: { "@id": `${origin}/#person` },
@@ -75,7 +91,14 @@ const articleJsonLd = {
 };
 ---
 
-<Layout title={title} description={description} ogImage={ogImageUrl}>
+<Layout
+  title={pageTitle}
+  description={description}
+  ogImage={ogImageUrl}
+  ogImageAlt={featuredImageAlt}
+  ogImageWidth={imageWidth}
+  ogImageHeight={imageHeight}
+>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
   <article class="max-w-4xl mx-auto px-4 py-20">
     <!-- Back button -->
@@ -93,10 +116,10 @@ const articleJsonLd = {
       <figure class="mb-8 rounded-2xl overflow-hidden">
         <Image
           src={image}
-          alt={title}
+          alt={featuredImageAlt}
           class="w-full aspect-video object-cover"
-          width={1200}
-          height={630}
+          width={imageWidth}
+          height={imageHeight}
         />
       </figure>
     )}

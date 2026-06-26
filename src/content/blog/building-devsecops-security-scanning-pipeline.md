@@ -1,7 +1,11 @@
 ---
 title: "Building a DevSecOps Security Scanning Pipeline for Secure SDLC"
-description: "How I structure a public DevSecOps scanning pipeline with SAST, secret detection, dependency scanning, SBOM generation, IaC checks, SARIF reports, and developer-friendly security evidence."
+seoTitle: "DevSecOps Security Scanning Pipeline | Secure SDLC"
+description: "How I built a DevSecOps scanning pipeline with SAST, secret scanning, SBOM generation, IaC checks, and SARIF reports for Secure SDLC practice."
 image: "@assets/placeholders/blog-devsecops.svg"
+imageAlt: "DevSecOps security scanning pipeline workflow with SAST, secret scanning, SBOM generation, and CI/CD reports"
+imageWidth: 1200
+imageHeight: 630
 publishDate: "2026-06-18"
 tags: ["DevSecOps", "Secure SDLC", "CI/CD Security", "SAST", "SBOM"]
 ---
