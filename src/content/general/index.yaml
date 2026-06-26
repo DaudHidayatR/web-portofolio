@@ -6,10 +6,6 @@ extraLinks:
     icon: Briefcase
     label: Projects
     displayOn: both
-  - link: /blog
-    icon: BookOpen
-    label: Blog
-    displayOn: both
   - link: mailto:daud28ramadhan@gmail.com
     icon: Mail
     label: Contact
