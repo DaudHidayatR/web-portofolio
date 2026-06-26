@@ -1,7 +1,11 @@
 ---
 title: "DevSecOps & Backend Blog: What This Blog Will Cover"
-description: "A roadmap for writing about Secure SDLC, CI/CD security, backend API security, Kubernetes security, OpenBao, SAST, dependency scanning, and secret scanning."
+seoTitle: "DevSecOps & Backend Blog | Secure SDLC"
+description: "A roadmap for writing about Secure SDLC, CI/CD security, backend API security, Kubernetes security, OpenBao, SAST, and dependency scanning."
 image: "@assets/placeholders/blog-devsecops.svg"
+imageAlt: "DevSecOps and backend engineering blog roadmap covering Secure SDLC and CI/CD security topics"
+imageWidth: 1200
+imageHeight: 630
 publishDate: "2026-06-18"
 tags: ["DevSecOps", "Backend", "Secure SDLC", "CI/CD Security"]
 ---

@@ -127,8 +127,12 @@ const blog = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			title: z.string(),
-			description: z.string(),
+			seoTitle: z.string().max(60).optional(),
+			description: z.string().min(80).max(170),
 			image: image(),
+			imageAlt: z.string().optional(),
+			imageWidth: z.number().optional(),
+			imageHeight: z.number().optional(),
 			publishDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			tags: z.array(z.string()).optional(),
