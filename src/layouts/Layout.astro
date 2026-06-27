@@ -1,7 +1,6 @@
 ---
 import "../styles/global.css";
 import { getEntry } from "astro:content";
-import { ClientRouter } from "astro:transitions";
 import Dock from "../components/Dock.astro";
 import FabFlower from "../components/FabFlower.astro";
 import ThemeSelector from "../components/ThemeSelector.astro";
@@ -47,6 +46,7 @@ const blurFadeAnimation = {
 	},
 };
 
+// Page transition styles are CSS-only to avoid shipping Astro's client router JavaScript.
 const pageTransition = {
 	forwards: blurFadeAnimation,
 	backwards: blurFadeAnimation,
@@ -130,19 +130,32 @@ const siteJsonLd = {
     <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <meta name="generator" content={Astro.generator} />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-67YE3ZCP1V"></script>
+    <!-- Google Analytics is loaded after the page becomes interactive to avoid competing with LCP on mobile. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'G-67YE3ZCP1V');
+      const loadAnalytics = () => {
+        if (document.querySelector('script[data-analytics="gtag"]')) return;
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-67YE3ZCP1V';
+        script.dataset.analytics = 'gtag';
+        script.onload = () => {
+          gtag('js', new Date());
+          gtag('config', 'G-67YE3ZCP1V');
+        };
+        document.head.appendChild(script);
+      };
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadAnalytics, { timeout: 2500 });
+      } else {
+        window.addEventListener('load', () => setTimeout(loadAnalytics, 1500), { once: true });
+      }
     </script>
     <title>{title}</title>
-
-    <!-- View Transitions -->
-    <ClientRouter />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content={title} />
