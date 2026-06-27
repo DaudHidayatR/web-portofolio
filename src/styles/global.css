@@ -11,9 +11,9 @@ The name should be the same as the theme name below.
 @plugin "daisyui" {
 	themes:
 		light --default,
-		dark --prefersdark,
+		dark,
 		retro,
-		dim;
+		dim --prefersdark;
 }
 
 html {

@@ -29,21 +29,41 @@ const { hero } = Astro.props;
       <figure class="max-w-100 w-40 sm:w-48 lg:w-64 aspect-square overflow-hidden mask mask-squircle">
         {
           typeof hero.avatar === "string" ? (
-            <img src={hero.avatar} alt={hero.name} class="h-full w-full object-cover object-top" />
+            <img
+              src={hero.avatar}
+              alt={hero.name}
+              class="h-full w-full object-cover object-top"
+              width="256"
+              height="384"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+              data-image-component
+            />
           ) : (
-            <Image src={hero.avatar} alt={hero.name} class="h-full w-full object-cover object-top" loading="eager" decoding="async" />
+            <Image
+              src={hero.avatar}
+              alt={hero.name}
+              class="h-full w-full object-cover object-top"
+              width={256}
+              height={384}
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+              data-image-component
+            />
           )
         }
       </figure>
-      <!-- 8 empty divs needed for the 3D effect -->
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <!-- Decorative hit areas for the 3D hover effect. Hidden from accessibility tools. -->
+      <div aria-hidden="true"></div>
+      <div aria-hidden="true"></div>
+      <div aria-hidden="true"></div>
+      <div aria-hidden="true"></div>
+      <div aria-hidden="true"></div>
+      <div aria-hidden="true"></div>
+      <div aria-hidden="true"></div>
+      <div aria-hidden="true"></div>
     </div>
     <div class="max-w-2xl text-center lg:text-left">
       <h1 class="text-4xl sm:text-5xl font-bold mb-4 text-balance">

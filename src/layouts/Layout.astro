@@ -30,28 +30,6 @@ const {
 	robots = "index, follow",
 } = Astro.props;
 
-// Custom blur-fade animation configuration
-const blurFadeAnimation = {
-	old: {
-		name: "blurFadeOut",
-		duration: "0.3s",
-		easing: "ease-in-out",
-		fillMode: "forwards",
-	},
-	new: {
-		name: "blurFadeIn",
-		duration: "0.3s",
-		easing: "ease-in-out",
-		fillMode: "backwards",
-	},
-};
-
-// Page transition styles are CSS-only to avoid shipping Astro's client router JavaScript.
-const pageTransition = {
-	forwards: blurFadeAnimation,
-	backwards: blurFadeAnimation,
-};
-
 const origin = Astro.site?.origin ?? Astro.url.origin;
 const canonicalUrl = new URL(Astro.url.pathname, origin);
 const ogImageUrl = ogImage ?? new URL("/images/og_home.png", origin).href;
@@ -116,7 +94,7 @@ const siteJsonLd = {
 ---
 
 <!doctype html>
-<html lang="en" transition:animate={pageTransition}>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -210,43 +188,20 @@ const siteJsonLd = {
         scroll-behavior: smooth;
       }
 
-      /* Initial Page Load Blur-Fade Animation */
-      @keyframes pageLoadBlurFade {
-        0% {
+      /* Initial Page Load Fade Animation */
+      @keyframes pageLoadFade {
+        from {
           opacity: 0;
-          filter: blur(8px);
         }
-        100% {
+        to {
           opacity: 1;
-          filter: blur(0px);
         }
       }
 
-      html {
-        animation: pageLoadBlurFade 0.3s ease-in-out;
-        animation-fill-mode: both;
-      }
-
-      /* Blur Fade View Transitions (for page-to-page navigation) */
-      @keyframes blurFadeIn {
-        0% {
-          opacity: 0;
-          filter: blur(10px);
-        }
-        100% {
-          opacity: 1;
-          filter: blur(0px);
-        }
-      }
-
-      @keyframes blurFadeOut {
-        0% {
-          opacity: 1;
-          filter: blur(0px);
-        }
-        100% {
-          opacity: 0;
-          filter: blur(10px);
+      @media (prefers-reduced-motion: no-preference) {
+        body {
+          animation: pageLoadFade 0.2s ease-out;
+          animation-fill-mode: both;
         }
       }
     </style>

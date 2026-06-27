@@ -25,6 +25,9 @@ const photoAlt = "Daud Hidayat Ramadhan, DevSecOps and Backend Engineer";
                 src={photo}
                 alt={photoAlt}
                 class="h-72 w-full object-cover object-top lg:h-full"
+                loading="lazy"
+                decoding="async"
+                data-image-component
               />
             ) : (
               <Image
@@ -35,6 +38,7 @@ const photoAlt = "Daud Hidayat Ramadhan, DevSecOps and Backend Engineer";
                 height={720}
                 loading="lazy"
                 decoding="async"
+                data-image-component
               />
             )}
           </figure>

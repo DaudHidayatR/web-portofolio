@@ -3,7 +3,13 @@
 ---
 
 <label class="swap swap-rotate">
-  <input type="checkbox" class="theme-controller" value="dark" />
+  <span class="sr-only">Toggle color theme</span>
+  <input
+    type="checkbox"
+    class="theme-controller"
+    value="dim"
+    aria-label="Toggle color theme"
+  />
 
   <!-- sun icon -->
   <svg
@@ -30,13 +36,14 @@
 
 <script is:inline>
   const lightThemeName = "light";
-  const darkThemeName = "dark";
+  const darkThemeName = "dim";
 
   // Set theme on page load based on localStorage or system preference
   function setTheme() {
     const theme =
       localStorage.getItem("theme") ||
-      document.documentElement.getAttribute("data-theme");
+      document.documentElement.getAttribute("data-theme") ||
+      darkThemeName;
     document.documentElement.setAttribute("data-theme", theme);
     const toggle = document.querySelector(".theme-controller");
     if (toggle) {
@@ -56,7 +63,4 @@
 
   // Run on page load
   setTheme();
-
-  // Run after view transitions
-  document.addEventListener("astro:after-swap", setTheme);
 </script>

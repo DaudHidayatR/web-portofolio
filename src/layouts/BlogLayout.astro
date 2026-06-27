@@ -120,6 +120,10 @@ const articleJsonLd = {
           class="w-full aspect-video object-cover"
           width={imageWidth}
           height={imageHeight}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          data-image-component
         />
       </figure>
     )}
