@@ -1,6 +1,6 @@
 ---
 icon: Mail
-linkUrl: mailto:daud28ramadhan@gmail.com
+linkUrl: mailto:me@daudhr.com
 linkText: by email
 footerIcon: Heart
 footerText: Built as an owned DevSecOps & Backend portfolio by
