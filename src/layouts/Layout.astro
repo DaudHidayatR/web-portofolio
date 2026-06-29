@@ -3,8 +3,7 @@ import "../styles/global.css";
 import { getEntry } from "astro:content";
 import Dock from "../components/Dock.astro";
 import FabFlower from "../components/FabFlower.astro";
-import ThemeSelector from "../components/ThemeSelector.astro";
-import ThemeToggle from "../components/ThemeToggle.astro";
+import ThemeController from "../components/ThemeController.svelte";
 
 // Load general singleton
 const generalEntry = await getEntry("general", "index");
@@ -110,12 +109,16 @@ const siteJsonLd = {
     <meta name="robots" content={robots} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      const theme = localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme") || "dim";
+      document.documentElement.setAttribute("data-theme", theme);
+    </script>
     <!-- Google Analytics is loaded after the page becomes interactive to avoid competing with LCP on mobile. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
@@ -168,7 +171,7 @@ const siteJsonLd = {
   <body class="min-h-screen">
     <!-- Theme Controls - Fixed Position -->
     <div class="fixed top-4 right-4 z-50">
-      {general.enableThemeSelector ? <ThemeSelector /> : <ThemeToggle />}
+      <ThemeController enableSelector={general.enableThemeSelector} client:load />
     </div>
 
     <slot />

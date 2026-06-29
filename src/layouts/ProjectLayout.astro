@@ -1,6 +1,7 @@
 ---
-import { Image } from "astro:assets";
+import { getImage, Image } from "astro:assets";
 import { ExternalLink } from "@lucide/astro";
+import ProjectImageModal from "../components/ProjectImageModal.svelte";
 import SkillBadge from "../components/SkillBadge.astro";
 import Layout from "./Layout.astro";
 
@@ -70,6 +71,14 @@ const ogImageUrl = image ? new URL(image.src, origin).href : undefined;
 const projectImageAlt = imageAlt ?? `${title} project architecture`;
 const projectImageWidth = imageWidth ?? image?.width;
 const projectImageHeight = imageHeight ?? image?.height;
+const modalImage = image
+	? await getImage({
+			src: image,
+			width: projectImageWidth ?? 1600,
+			height: projectImageHeight ?? 900,
+			format: "webp",
+		})
+	: undefined;
 const isDiagramImage = imageDisplay === "diagram";
 const canonicalUrl = new URL(Astro.url.pathname, origin).href;
 const projectKeywords = skills ?? [];
@@ -174,12 +183,7 @@ const projectJsonLd = {
     {
       image && (
         <figure class="mb-8 rounded-2xl overflow-hidden bg-base-200">
-          <button
-            type="button"
-            class="block w-full cursor-zoom-in"
-            aria-label={`Zoom image: ${projectImageAlt}`}
-            data-project-image-open
-          >
+          <ProjectImageModal image={modalImage?.src ?? image.src} alt={projectImageAlt} client:idle>
             {isDiagramImage ? (
               <Image
                 src={image}
@@ -205,39 +209,8 @@ const projectJsonLd = {
                 data-image-component
               />
             )}
-          </button>
+          </ProjectImageModal>
         </figure>
-      )
-    }
-
-    {
-      image && (
-        <dialog
-          class="modal backdrop:bg-black/80"
-          aria-label={`Zoomed image: ${projectImageAlt}`}
-          data-project-image-dialog
-        >
-          <div class="modal-box max-w-[96vw] bg-base-100 p-3 shadow-2xl">
-            <form method="dialog" class="mb-3 flex justify-end">
-              <button class="btn btn-circle btn-sm" aria-label="Close image zoom">
-                x
-              </button>
-            </form>
-            <Image
-              src={image}
-              alt={projectImageAlt}
-              class="max-h-[82vh] w-full rounded-xl object-contain"
-              width={projectImageWidth ?? 1600}
-              height={projectImageHeight ?? 900}
-              loading="eager"
-              decoding="async"
-              data-image-component
-            />
-          </div>
-          <form method="dialog" class="modal-backdrop">
-            <button aria-label="Close image zoom">close</button>
-          </form>
-        </dialog>
       )
     }
 
@@ -334,14 +307,4 @@ const projectJsonLd = {
     </div>
   </article>
 
-  <script is:inline>
-    const imageOpenButton = document.querySelector("[data-project-image-open]");
-    const imageDialog = document.querySelector("[data-project-image-dialog]");
-
-    imageOpenButton?.addEventListener("click", () => {
-      if (imageDialog instanceof HTMLDialogElement) {
-        imageDialog.showModal();
-      }
-    });
-  </script>
 </Layout>

@@ -57,6 +57,27 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": ["**/*.svelte"],
+			"formatter": {
+				"enabled": false
+			},
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedImports": "off",
+						"noUnusedVariables": "off"
+					}
+				}
+			},
+			"assist": {
+				"actions": {
+					"source": {
+						"organizeImports": "off"
+					}
+				}
+			}
 		}
 	]
 }

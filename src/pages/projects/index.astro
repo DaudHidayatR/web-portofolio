@@ -1,17 +1,12 @@
 ---
+import { getImage } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { getCollection, getEntry } from "astro:content";
-import ProjectsLayoutGrid from "../../components/ProjectsLayoutGrid.astro";
-import ProjectsLayoutTabsHorizontal from "../../components/ProjectsLayoutTabsHorizontal.astro";
-import ProjectsLayoutTabsVertical from "../../components/ProjectsLayoutTabsVertical.astro";
+import { getCollection } from "astro:content";
+import ProjectExplorer from "../../components/ProjectExplorer.svelte";
 import Layout from "../../layouts/Layout.astro";
 
 const projects = await getCollection("projects");
 const categories = await getCollection("projectCategories");
-
-// Load General settings for layout preference
-const generalEntry = await getEntry("general", "index");
-const projectsLayout = generalEntry?.data?.projectsLayout ?? "grid";
 
 // Sort categories by sortOrder, then alphabetically
 const sortedCategories = categories.sort((a, b) => {
@@ -55,6 +50,43 @@ for (const cat of sortedCategories) {
 const uncategorizedProjects = projects
 	.filter((p) => !p.data.category || !categoryMap.has(p.data.category))
 	.sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+
+const allProjects = [
+	...categoryGroups.flatMap((group) => group.projects),
+	...uncategorizedProjects,
+].sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+
+const projectExplorerProjects = await Promise.all(
+	allProjects.map(async (project) => {
+		const image = await getImage({
+			src: project.data.image,
+			width: 600,
+			height: 400,
+			format: "webp",
+		});
+
+		return {
+			id: project.id,
+			title: project.data.title,
+			description: project.data.description,
+			category: project.data.category ?? "_other",
+			categoryLabel: categoryMap.get(project.data.category ?? "")?.title,
+			startDate: project.data.startDate.toISOString(),
+			endDate: project.data.endDate?.toISOString(),
+			skills: project.data.skills,
+			demoLink: project.data.demoLink,
+			sourceLink: project.data.sourceLink,
+			href: `/projects/${project.id}`,
+			image: image.src,
+		};
+	}),
+);
+
+const projectExplorerCategories = sortedCategories.map((category) => ({
+	slug: category.id,
+	title: category.data.title,
+	icon: category.data.icon,
+}));
 ---
 
 <Layout
@@ -98,20 +130,11 @@ const uncategorizedProjects = projects
             No projects yet. Check back soon!
           </p>
         </div>
-      ) : projectsLayout === "tabs-horizontal" ? (
-        <ProjectsLayoutTabsHorizontal
-          categoryGroups={categoryGroups}
-          uncategorizedProjects={uncategorizedProjects}
-        />
-      ) : projectsLayout === "tabs-vertical" ? (
-        <ProjectsLayoutTabsVertical
-          categoryGroups={categoryGroups}
-          uncategorizedProjects={uncategorizedProjects}
-        />
       ) : (
-        <ProjectsLayoutGrid
-          categoryGroups={categoryGroups}
-          uncategorizedProjects={uncategorizedProjects}
+        <ProjectExplorer
+          categories={projectExplorerCategories}
+          projects={projectExplorerProjects}
+          client:visible={{ rootMargin: "200px" }}
         />
       )
     }
