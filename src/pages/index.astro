@@ -8,6 +8,7 @@ import Hackathons from "../components/Hackathons.astro";
 import Hero from "../components/Hero.astro";
 import Projects from "../components/Projects.astro";
 import Timeline from "../components/Timeline.astro";
+import SlideNavigator from "../components/SlideNavigator.svelte";
 import Layout from "../layouts/Layout.astro";
 
 // Load Hero singleton
@@ -20,6 +21,33 @@ const { Content: AboutContent } = await render(aboutEntry);
 // Load General singleton
 const generalEntry = await getEntry("general", "index");
 const general = generalEntry.data;
+
+interface HomeSlide {
+	id: string;
+	label: string;
+	shortLabel?: string;
+}
+
+const slides: HomeSlide[] = [
+	{ id: "home", label: "Home" },
+	general.showAboutSection && { id: "about", label: "About" },
+	general.showProjectsSection && {
+		id: "projects",
+		label: "Featured Projects",
+		shortLabel: "Projects",
+	},
+	general.showBlogSection && { id: "blog", label: "Blog" },
+	general.showWorkSection && {
+		id: "work",
+		label: "Work Experience",
+		shortLabel: "Work",
+	},
+	general.showEducationSection && { id: "education", label: "Education" },
+	general.showHackathonsSection && { id: "hackathons", label: "Hackathons" },
+	general.showContactSection && { id: "contact", label: "Contact" },
+].filter((slide): slide is HomeSlide => Boolean(slide));
+
+const nextSlide = slides[1];
 ---
 
 <Layout
@@ -27,8 +55,9 @@ const general = generalEntry.data;
   description="DevSecOps and Backend Engineering portfolio covering Secure SDLC, CI/CD security, REST APIs, Kubernetes, and automation."
 >
   <main>
+    <SlideNavigator slides={slides} client:load />
     <!-- Hero Section (Always visible) -->
-    <Hero hero={heroEntry.data} />
+    <Hero hero={heroEntry.data} nextSlide={nextSlide} />
 
     <!-- Primary content stays visible on mobile for users and mobile-first indexing. -->
     <div class="contents">

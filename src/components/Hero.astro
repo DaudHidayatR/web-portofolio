@@ -17,12 +17,16 @@ interface Props {
 			label: string;
 		}>;
 	};
+	nextSlide?: {
+		id: string;
+		label: string;
+	};
 }
 
-const { hero } = Astro.props;
+const { hero, nextSlide } = Astro.props;
 ---
 
-<section class="hero min-h-[calc(100svh-4rem)] py-16 px-4 sm:min-h-screen sm:py-20">
+<section id="home" data-home-slide data-slide-label="Home" class="home-slide hero py-16 px-4 sm:py-20">
   <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl gap-8 lg:gap-16 px-0">
     <div class="hover-3d">
       <!-- content -->
@@ -99,6 +103,16 @@ const { hero } = Astro.props;
           })
         }
       </div>
+      {
+        nextSlide && (
+          <a
+            href={`#${nextSlide.id}`}
+            class="link link-hover mt-6 inline-flex text-sm text-base-content/70 underline-offset-4"
+          >
+            Explore {nextSlide.label}
+          </a>
+        )
+      }
     </div>
   </div>
 </section>
