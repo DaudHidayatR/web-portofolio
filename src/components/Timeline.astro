@@ -10,6 +10,7 @@ interface Props {
 	color?: string;
 	backgroundColor?: string;
 	icon: any; // Pass the icon component directly
+	sectionId?: string;
 	sectionTitle: string;
 	sectionSubtitle?: string;
 }
@@ -20,6 +21,7 @@ const {
 	color = "primary",
 	backgroundColor = "base-200",
 	icon,
+	sectionId = collection,
 	sectionTitle,
 	sectionSubtitle,
 } = Astro.props;
@@ -85,17 +87,14 @@ const entriesWithContent = await Promise.all(
 );
 ---
 
-<section id={collection} data-home-slide class={`home-slide py-16 sm:py-20 px-4 bg-${backgroundColor}`}>
+<section id={sectionId} class={`flow-section py-16 sm:py-20 px-4 bg-${backgroundColor}`}>
     <div
         class={`mx-auto ${variant === "timeline" ? "max-w-4xl" : "max-w-4xl"}`}
     >
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold">{sectionTitle}</h2>
-            {
-                sectionSubtitle && (
-                    <p class="text-base-content/70 mt-2">{sectionSubtitle}</p>
-                )
-            }
+        <div class="mb-12 border-b editorial-rule pb-4">
+            <p class="editorial-kicker">{collection === "work" ? "03 / Experience" : "04 / Education"}</p>
+            <h2 class="mt-2 text-4xl font-bold">{sectionTitle}</h2>
+            {sectionSubtitle && <p class="mt-2 text-base-content/70">{sectionSubtitle}</p>}
         </div>
 
         {
@@ -104,14 +103,14 @@ const entriesWithContent = await Promise.all(
                     <ul class="mx-auto max-w-3xl space-y-6">
                         {entriesWithContent.map(({ entry, Content }, index) => (
                             <li class="relative pl-10">
-                                <div class={`absolute left-0 top-2 flex size-8 items-center justify-center rounded-full bg-base-100 text-${color} shadow`}>
+                                <div class={`absolute left-0 top-2 flex size-8 items-center justify-center border editorial-rule bg-base-100 text-${color}`}>
                                     <IconComponent class="size-4" />
                                 </div>
                                 {index < entriesWithContent.length - 1 && (
                                     <div class="absolute left-4 top-12 h-[calc(100%+1.5rem)] w-px bg-base-100" />
                                 )}
-                                <article class="card bg-base-100 shadow-lg">
-                                    <div class="card-body p-5 sm:p-6">
+                                <article class="border editorial-rule bg-base-100">
+                                    <div class="p-5 sm:p-6">
                                         <time class="font-mono text-sm text-base-content/70 italic">
                                         {formatPeriod(
                                             entry.data.startDate,
@@ -131,7 +130,7 @@ const entriesWithContent = await Promise.all(
                                         </time>
                                         <div class="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
                                                 {entry.data.logo && (
-                                                    <div class="w-16 h-16 sm:w-20 sm:h-20 flex shrink-0 items-center justify-center rounded-lg bg-base-200 p-2">
+                                                    <div class="flex size-16 shrink-0 items-center justify-center rounded-box border editorial-rule bg-base-200 p-2 sm:size-20">
                                                         <Image
                                                             src={
                                                                 entry.data.logo
@@ -148,7 +147,7 @@ const entriesWithContent = await Promise.all(
                                                     </div>
                                                 )}
                                                 <div class="flex-1">
-                                                    <h3 class="card-title">
+                                                    <h3 class="text-lg font-bold">
                                                         {collection === "work"
                                                             ? entry.data.subtitle
                                                             : entry.data.title}
@@ -170,9 +169,9 @@ const entriesWithContent = await Promise.all(
                                                     )}
                                                 </div>
                                         </div>
-                                            <div class="card-actions justify-end mt-4">
+                                            <div class="mt-4 flex justify-end">
                                                 <button
-                                                    class="btn btn-ghost btn-sm"
+                                                    class="editorial-action-secondary"
                                                     onclick={`document.getElementById('modal-${entry.id}').showModal()`}
                                                 >
                                                     Read more
@@ -187,11 +186,11 @@ const entriesWithContent = await Promise.all(
                     {/* Modals for timeline entries */}
                     {entriesWithContent.map(({ entry, Content }) => (
                         <dialog id={`modal-${entry.id}`} class="modal">
-                            <div class="modal-box max-w-2xl">
+                            <div class="modal-box max-w-2xl rounded-box border editorial-rule bg-base-100">
                                 {/* Modal Header */}
                                 <div class="flex items-center gap-4 mb-4">
                                     {entry.data.logo && (
-                                        <div class="w-24 h-24 flex shrink-0 items-center justify-center rounded-lg bg-base-200 p-2">
+                                        <div class="flex size-24 shrink-0 items-center justify-center rounded-box border editorial-rule bg-base-200 p-2">
                                             <Image
                                                 src={entry.data.logo}
                                                 alt={entry.data.title}
@@ -265,14 +264,14 @@ const entriesWithContent = await Promise.all(
                                             href={entry.data.link}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            class="btn btn-ghost gap-2"
+                                            class="editorial-action-secondary"
                                         >
                                             View Company
                                             <ExternalLink class="size-4" />
                                         </a>
                                     )}
                                     <form method="dialog">
-                                        <button class="btn">Close</button>
+                                        <button class="editorial-action-secondary">Close</button>
                                     </form>
                                 </div>
                             </div>
@@ -283,15 +282,15 @@ const entriesWithContent = await Promise.all(
                     ))}
                 </>
             ) : (
-                <ul class="list bg-base-100 rounded-box shadow-lg overflow-hidden">
-                    {entriesWithContent.map(({ entry, Content }, index) => (
-                        <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
+                <ul class="overflow-hidden border editorial-rule bg-base-100">
+                    {entriesWithContent.map(({ entry, Content }) => (
+                        <li class="border-b editorial-rule last:border-b-0">
                             <details class="collapse">
                                 <summary class="collapse-title pe-5">
                                     <div class="grid gap-3 sm:grid-cols-[auto_1fr_auto] sm:items-center">
                                         <div>
                                             {entry.data.logo && (
-                                                <div class="w-16 h-16 flex shrink-0 items-center justify-center rounded-lg bg-base-200 p-1.5">
+                                                <div class="flex size-16 shrink-0 items-center justify-center rounded-box border editorial-rule bg-base-200 p-1.5">
                                                     <Image
                                                         src={entry.data.logo}
                                                         alt={entry.data.title}
@@ -350,7 +349,7 @@ const entriesWithContent = await Promise.all(
                                                 href={entry.data.link}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                class="link link-hover"
+                                                class="editorial-link"
                                             >
                                                 {collection === "work"
                                                     ? "View Company"

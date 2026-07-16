@@ -1,11 +1,18 @@
 ---
 featured: true
+featuredOrder: 1
 category: real-projects
 title: Self-Hosted DevSecOps Lab
 description: >-
   A rootless Kubernetes DevSecOps lab that combines GitOps, service mesh,
   secrets management, network policy, and the DevSecOps Security Scanning
   Pipeline as part of a controlled Secure SDLC practice environment.
+challenge: >-
+  Create a safer, reproducible environment for practicing GitOps, Kubernetes
+  security, secret management, network policy, and deployment recovery.
+contribution: >-
+  Structured the rootless kind cluster, Flux workflows, Istio, OpenBao,
+  private access, policy controls, scanning integration, and setup fallbacks.
 image: '@assets/projects/self-hosted-devsecops-lab/self-hosted-devsecops-homelab.webp'
 imageAlt: >-
   Self-hosted DevSecOps homelab architecture with rootless kind Kubernetes,
@@ -13,7 +20,7 @@ imageAlt: >-
   vulnerability management, and integrated security scanning.
 imageWidth: 1490
 imageHeight: 840
-imageDisplay: cover
+imageDisplay: diagram
 startDate: 2026-05-01
 skills:
   - Kubernetes

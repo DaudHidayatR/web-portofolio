@@ -23,8 +23,8 @@ interface Props {
 const { project, view, period }: Props = $props();
 </script>
 
-<article class={`card bg-base-100 shadow-xl transition-shadow hover:shadow-2xl ${view === "list" ? "md:card-side" : ""}`}>
-	<a class="transition-opacity hover:opacity-80" href={project.href}>
+<article class={`editorial-frame bg-base-100 ${view === "list" ? "md:flex" : ""}`}>
+	<a href={project.href}>
 		<figure class={view === "grid" ? "aspect-video" : "aspect-video md:h-full md:w-72"}>
 			<img
 				alt={project.title}
@@ -35,26 +35,24 @@ const { project, view, period }: Props = $props();
 			/>
 		</figure>
 	</a>
-	<div class="card-body">
-		<h3 class="card-title transition-colors hover:text-primary">
+	<div class="p-6">
+		<h3 class="text-xl font-bold">
 			<a href={project.href}>{project.title}</a>
 		</h3>
 		<div class="flex flex-wrap items-center gap-2">
 			<time class="text-sm text-base-content/60">{period}</time>
 			{#if project.categoryLabel}
-				<span class="badge badge-outline badge-sm">{project.categoryLabel}</span>
+				<span class="border-l editorial-rule pl-2 text-sm">{project.categoryLabel}</span>
 			{/if}
 		</div>
 		<p class="text-base-content/80">{project.description}</p>
-		<div class="mt-2 flex flex-wrap gap-2">
-			{#each project.skills as skill}
-				<span class="badge badge-accent badge-soft badge-sm">{skill}</span>
-			{/each}
-		</div>
-		<div class="card-actions mt-4 justify-end gap-2">
+		<ul class="mt-3 flex flex-wrap gap-x-2 text-sm text-base-content/70">
+			{#each project.skills as skill, index}<li>{skill}{index < project.skills.length - 1 ? " /" : ""}</li>{/each}
+		</ul>
+		<div class="mt-5 flex flex-wrap justify-end gap-2">
 			{#if project.demoLink}
 				<a
-					class="btn btn-sm btn-soft gap-1"
+					class="editorial-action-secondary"
 					href={project.demoLink}
 					rel="noopener noreferrer"
 					target="_blank"
@@ -64,7 +62,7 @@ const { project, view, period }: Props = $props();
 			{/if}
 			{#if project.sourceLink}
 				<a
-					class="btn btn-sm btn-soft gap-1"
+					class="editorial-action-secondary"
 					href={project.sourceLink}
 					rel="noopener noreferrer"
 					target="_blank"
@@ -72,7 +70,7 @@ const { project, view, period }: Props = $props();
 					Source
 				</a>
 			{/if}
-			<a class="btn btn-sm btn-primary" href={project.href}>View</a>
+			<a class="editorial-action" href={project.href}>View</a>
 		</div>
 	</div>
 </article>

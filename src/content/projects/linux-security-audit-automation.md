@@ -3,6 +3,12 @@ title: Linux Security Audit Automation
 description: >-
   A Linux security reporting project that turns periodic host checks into
   repeatable text and HTML reports with optional email delivery.
+challenge: >-
+  Make repetitive host reviews easier to run consistently instead of relying
+  on memory and manual checks across several Linux security tools.
+contribution: >-
+  Built a shell workflow that collects available host data, handles missing
+  tools gracefully, creates text and HTML reports, and supports email delivery.
 image: '@assets/projects/linux-security-audit-automation/linux-security-audit-automation.webp'
 imageAlt: >-
   Linux security audit automation dashboard for virtual machine hardening,
@@ -21,6 +27,7 @@ skills:
   - Security Reporting
   - Automation
 featured: true
+featuredOrder: 3
 category: experiments
 sourceLink: https://github.com/DaudHidayatR/security-audit-report
 ---

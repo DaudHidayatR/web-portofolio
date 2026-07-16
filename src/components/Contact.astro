@@ -1,43 +1,19 @@
 ---
 import { getEntry, render } from "astro:content";
+import { ArrowUpRight } from "@lucide/astro";
 import { getIcon } from "../utils/iconMapper";
 import SocialShare from "./SocialShare.astro";
-
 const contactEntry = await getEntry("contact", "index");
 const contact = contactEntry.data;
 const { Content } = await render(contactEntry);
-
-const SectionIcon = getIcon(contact.icon as any);
+const heroEntry = await getEntry("hero", "index");
+const profileLinks = heroEntry.data.socialLinks.filter((link) => link.url !== contact.linkUrl);
 const FooterIcon = getIcon(contact.footerIcon as any);
 ---
-
-<footer id="contact" data-home-slide class="home-slide footer footer-horizontal footer-center bg-base-200 py-10 px-4">
-  <aside>
-    <SectionIcon class="inline-block size-20" />
-    <p class="max-w-xl m-auto text-lg">
-      <Content />
-      <a
-        href={contact.linkUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="link link-hover text-primary"
-      >
-        {contact.linkText}
-      </a>
-      and I'll respond whenever I can.
-    </p>
-    <SocialShare />
-    <p class="flex items-center space-x-1 text-base-content/60">
-      <span>Copyright © {new Date().getFullYear()} - {contact.footerText}</span>
-      <a
-        class="link link-hover inline-flex justify-center items-center"
-        href={contact.footerLinkUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <FooterIcon class="size-3 inline-block mr-1" />
-        {contact.footerLinkText}
-      </a>
-    </p>
-  </aside>
+<footer id="contact" class="snap-panel contact-panel flex border-t editorial-rule px-4 py-16 sm:px-6 sm:py-20 lg:px-8" aria-labelledby="contact-title">
+  <div class="mx-auto flex w-full max-w-5xl flex-col justify-center"><p class="editorial-kicker">05 / Contact</p><h2 id="contact-title" class="mt-3 max-w-3xl text-3xl font-bold tracking-tight text-balance sm:text-4xl">Let&apos;s build something secure.</h2><div class="prose mt-6 max-w-2xl text-base-content/75"><Content /></div>
+    <div class="mt-8 flex flex-wrap gap-3"><a href={contact.linkUrl} class="editorial-action">Email me<ArrowUpRight class="size-4" aria-hidden="true" /></a>{profileLinks.map((link) => { const IconComponent = getIcon(link.icon as any); return <a href={link.url} target="_blank" rel="noopener noreferrer" class="editorial-action-secondary"><IconComponent class="size-4" aria-hidden="true" />{link.label}</a>; })}</div>
+    <div class="mt-10 border-t editorial-rule pt-6"><SocialShare /></div>
+    <p class="mt-10 flex flex-wrap items-center gap-1 text-sm text-base-content/65"><span>Copyright © {new Date().getFullYear()} — {contact.footerText}</span><a class="editorial-link inline-flex items-center" href={contact.footerLinkUrl} target="_blank" rel="noopener noreferrer"><FooterIcon class="mr-1 size-3" aria-hidden="true" />{contact.footerLinkText}</a></p>
+  </div>
 </footer>

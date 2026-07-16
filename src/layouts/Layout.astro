@@ -3,11 +3,26 @@ import "../styles/global.css";
 import { getEntry } from "astro:content";
 import Dock from "../components/Dock.astro";
 import FabFlower from "../components/FabFlower.astro";
-import ThemeController from "../components/ThemeController.svelte";
+import SiteHeader from "../components/SiteHeader.astro";
 
 // Load general singleton
 const generalEntry = await getEntry("general", "index");
 const general = generalEntry.data;
+
+interface HeaderLink {
+	id: string;
+	label: string;
+}
+
+const primaryNavLinks: HeaderLink[] = [
+	general.showProjectsSection && { id: "work", label: "Work" },
+	(general.showWorkSection || general.showEducationSection) && {
+		id: "experience",
+		label: "Experience",
+	},
+	general.showAboutSection && { id: "about", label: "About" },
+	general.showContactSection && { id: "contact", label: "Contact" },
+].filter((link): link is HeaderLink => Boolean(link));
 
 interface Props {
 	title?: string;
@@ -117,7 +132,10 @@ const siteJsonLd = {
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
     <script is:inline>
-      const theme = localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme") || "dim";
+      const storedTheme = localStorage.getItem("theme");
+      const theme = storedTheme === "editorial-light" || storedTheme === "editorial-dark"
+        ? storedTheme
+        : matchMedia("(prefers-color-scheme: dark)").matches ? "editorial-dark" : "editorial-light";
       document.documentElement.setAttribute("data-theme", theme);
     </script>
     <!-- Google Analytics is loaded after the page becomes interactive to avoid competing with LCP on mobile. -->
@@ -170,10 +188,7 @@ const siteJsonLd = {
     <slot name="head" />
   </head>
   <body class="min-h-screen">
-    <!-- Theme Controls - Fixed Position -->
-    <div class="fixed top-4 right-4 z-50">
-      <ThemeController enableSelector={general.enableThemeSelector} client:load />
-    </div>
+    <SiteHeader links={primaryNavLinks} />
 
     <slot />
 
@@ -196,24 +211,5 @@ const siteJsonLd = {
       )
     }
 
-    <style is:global>
-      /* Initial Page Load Fade Animation */
-      @keyframes pageLoadFade {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      @media (prefers-reduced-motion: no-preference) {
-        body {
-          animation: pageLoadFade 0.2s ease-out;
-          animation-fill-mode: both;
-        }
-      }
-
-    </style>
   </body>
 </html>

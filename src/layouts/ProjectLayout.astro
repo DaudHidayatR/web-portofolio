@@ -160,7 +160,7 @@ const projectJsonLd = {
   <article class="max-w-4xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">
-      <a href="/projects" class="btn btn-ghost btn-sm">
+      <a href="/projects" class="editorial-link inline-flex items-center gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -182,7 +182,7 @@ const projectJsonLd = {
     <!-- TODO: Future Enhancement - Support multiple images/project gallery -->
     {
       image && (
-        <figure class="mb-8 rounded-2xl overflow-hidden bg-base-200">
+        <figure class="editorial-frame mb-8">
           <ProjectImageModal image={modalImage?.src ?? image.src} alt={projectImageAlt} client:idle>
             {isDiagramImage ? (
               <Image
@@ -229,7 +229,7 @@ const projectJsonLd = {
           !endDate && (
             <>
               <span>•</span>
-              <span class="badge badge-success badge-sm">Ongoing</span>
+              <span class="font-semibold text-primary">Ongoing</span>
             </>
           )
         }
@@ -244,7 +244,7 @@ const projectJsonLd = {
                 href={demoLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="btn btn-primary gap-2"
+                class="editorial-action"
               >
                 <ExternalLink class="size-5" />
                 Live Demo
@@ -255,7 +255,7 @@ const projectJsonLd = {
                 href={sourceLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="btn btn-soft gap-2"
+                class="editorial-action-secondary"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -277,14 +277,12 @@ const projectJsonLd = {
     <!-- Tech Stack Showcase -->
     {
       skills && skills.length > 0 && (
-        <div class="card bg-base-200 mb-8">
-          <div class="card-body">
-            <h2 class="card-title text-lg mb-3">Tech Stack</h2>
-            <div class="flex flex-wrap gap-2">
-              {skills.map((skill) => (
-                <SkillBadge skill={skill} />
-              ))}
-            </div>
+        <div class="mb-8 border-y editorial-rule py-6">
+          <div>
+            <h2 class="editorial-kicker mb-3">Tech Stack</h2>
+            <ul class="flex flex-wrap gap-x-2 text-sm">
+              {skills.map((skill, index) => <li>{skill}{index < skills.length - 1 && " /"}</li>)}
+            </ul>
           </div>
         </div>
       )
@@ -303,7 +301,7 @@ const projectJsonLd = {
 
     <!-- Back to projects link -->
     <div class="text-center mt-8">
-      <a href="/projects" class="btn btn-primary"> View All Projects </a>
+      <a href="/projects" class="editorial-action">View All Projects</a>
     </div>
   </article>
 

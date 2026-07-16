@@ -4,6 +4,12 @@ description: >-
   A public Secure SDLC and DevSecOps boilerplate for running repeatable security
   checks with SAST, secret scanning, dependency scanning, container scanning,
   SBOM generation, and IaC policy validation.
+challenge: >-
+  Move repeatable code, dependency, secret, container, SBOM, and infrastructure
+  checks earlier without requiring a custom security platform.
+contribution: >-
+  Built the Bash and Makefile orchestration plus GitHub Actions workflows that
+  run containerized scanners and publish SARIF, JSON, text, and SBOM artifacts.
 image: '@assets/projects/devsecops-security-scanning-pipeline/devsecops-security-scanning-pipeline.webp'
 imageAlt: >-
   DevSecOps CI/CD security scanning pipeline architecture using GitHub,
@@ -23,6 +29,7 @@ skills:
   - Semgrep
   - Shell
 featured: true
+featuredOrder: 2
 category: real-projects
 sourceLink: https://github.com/DaudHidayatR/scan-apps-pipeline
 ---

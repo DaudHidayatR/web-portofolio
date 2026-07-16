@@ -1,5 +1,4 @@
 projectsLayout: tabs-horizontal
-enableThemeSelector: false
 extraLinksEnabled: false
 extraLinks:
   - link: /projects

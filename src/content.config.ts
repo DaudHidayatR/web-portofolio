@@ -87,9 +87,12 @@ const projects = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			featured: z.boolean().optional().default(false),
+			featuredOrder: z.number().int().positive().optional(),
 			category: z.string().optional(),
 			title: z.string(),
 			description: z.string(),
+			challenge: z.string().optional(),
+			contribution: z.string().optional(),
 			image: image(),
 			imageAlt: z.string().optional(),
 			imageWidth: z.number().optional(),
@@ -154,7 +157,6 @@ const about = defineCollection({
 const general = defineCollection({
 	loader: glob({ pattern: "**/*.{md,yaml}", base: "./src/content/general" }),
 	schema: z.object({
-		enableThemeSelector: z.boolean(),
 		extraLinksEnabled: z.boolean(),
 		extraLinks: z.array(
 			z.object({

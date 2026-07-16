@@ -116,14 +116,14 @@ function formatPeriod(startDate: string, endDate?: string) {
 </script>
 
 <section class="space-y-8">
-	<div class="card bg-base-200 shadow-sm">
-		<div class="card-body gap-4">
+	<div class="border editorial-rule bg-base-200 p-5">
+		<div class="grid gap-4">
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-4">
 				<label class="form-control md:col-span-2">
 					<span class="label-text mb-1">Search projects</span>
 					<input
 						bind:value={query}
-						class="input input-bordered w-full"
+						class="w-full rounded-field border editorial-rule bg-base-100 px-3 py-2 focus-visible:outline-2 focus-visible:outline-primary"
 						placeholder="Search title, description, or skill"
 						type="search"
 					/>
@@ -131,7 +131,7 @@ function formatPeriod(startDate: string, endDate?: string) {
 
 				<label class="form-control">
 					<span class="label-text mb-1">Category</span>
-					<select bind:value={selectedCategory} class="select select-bordered w-full">
+					<select bind:value={selectedCategory} class="w-full rounded-field border editorial-rule bg-base-100 px-3 py-2 focus-visible:outline-2 focus-visible:outline-primary">
 						<option value="all">All categories</option>
 						{#each categories as category}
 							<option value={category.slug}>{category.icon ?? ""} {category.title}</option>
@@ -142,7 +142,7 @@ function formatPeriod(startDate: string, endDate?: string) {
 
 				<label class="form-control">
 					<span class="label-text mb-1">Skill</span>
-					<select bind:value={selectedSkill} class="select select-bordered w-full">
+					<select bind:value={selectedSkill} class="w-full rounded-field border editorial-rule bg-base-100 px-3 py-2 focus-visible:outline-2 focus-visible:outline-primary">
 						<option value="all">All skills</option>
 						{#each skills as skill}
 							<option value={skill}>{skill}</option>
@@ -156,14 +156,14 @@ function formatPeriod(startDate: string, endDate?: string) {
 					{filteredProjects.length} of {projects.length} projects shown
 				</p>
 				<div class="flex flex-wrap gap-2">
-					<select bind:value={sort} class="select select-bordered select-sm">
+					<select bind:value={sort} class="rounded-field border editorial-rule bg-base-100 px-3 py-2 focus-visible:outline-2 focus-visible:outline-primary">
 						<option value="newest">Newest first</option>
 						<option value="oldest">Oldest first</option>
 					</select>
-					<div class="join">
+					<div class="flex">
 						<button
 							aria-pressed={view === "grid"}
-							class={`btn btn-sm join-item ${view === "grid" ? "btn-primary" : "btn-soft"}`}
+							class={view === "grid" ? "editorial-action" : "editorial-action-secondary"}
 							type="button"
 							onclick={() => (view = "grid")}
 						>
@@ -171,7 +171,7 @@ function formatPeriod(startDate: string, endDate?: string) {
 						</button>
 						<button
 							aria-pressed={view === "list"}
-							class={`btn btn-sm join-item ${view === "list" ? "btn-primary" : "btn-soft"}`}
+							class={view === "list" ? "editorial-action" : "editorial-action-secondary"}
 							type="button"
 							onclick={() => (view = "list")}
 						>

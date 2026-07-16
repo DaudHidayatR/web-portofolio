@@ -1,5 +1,5 @@
 ---
-import { getEntry, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import { Briefcase, GraduationCap } from "@lucide/astro";
 import About from "../components/About.astro";
 import Blog from "../components/Blog.astro";
@@ -8,46 +8,45 @@ import Hackathons from "../components/Hackathons.astro";
 import Hero from "../components/Hero.astro";
 import Projects from "../components/Projects.astro";
 import Timeline from "../components/Timeline.astro";
-import SlideNavigator from "../components/SlideNavigator.svelte";
 import Layout from "../layouts/Layout.astro";
 
-// Load Hero singleton
 const heroEntry = await getEntry("hero", "index");
-
-// Load About singleton
 const aboutEntry = await getEntry("about", "index");
 const { Content: AboutContent } = await render(aboutEntry);
-
-// Load General singleton
 const generalEntry = await getEntry("general", "index");
 const general = generalEntry.data;
 
-interface HomeSlide {
-	id: string;
-	label: string;
-	shortLabel?: string;
-}
+const featuredProjects = general.showProjectsSection
+	? (await getCollection("projects"))
+			.filter((project) => project.data.featured)
+			.sort((a, b) => {
+				const orderDifference =
+					(a.data.featuredOrder ?? Number.MAX_SAFE_INTEGER) -
+					(b.data.featuredOrder ?? Number.MAX_SAFE_INTEGER);
+				if (orderDifference !== 0) return orderDifference;
+				return b.data.startDate.getTime() - a.data.startDate.getTime();
+			})
+			.slice(0, 3)
+	: [];
 
-const slides: HomeSlide[] = [
-	{ id: "home", label: "Home" },
-	general.showAboutSection && { id: "about", label: "About" },
-	general.showProjectsSection && {
-		id: "projects",
-		label: "Featured Projects",
-		shortLabel: "Projects",
+const showExperience = general.showWorkSection || general.showEducationSection;
+const firstFeaturedProject = featuredProjects[0] && {
+	id: `project-${featuredProjects[0].id}`,
+	label: "Selected work",
+};
+const primaryCta = [
+	firstFeaturedProject,
+	general.showAboutSection && { id: "about", label: "Explore about me" },
+	showExperience && { id: "experience", label: "Explore experience" },
+	general.showBlogSection && { id: "blog", label: "Read the blog" },
+	general.showHackathonsSection && {
+		id: "hackathons",
+		label: "Explore hackathons",
 	},
-	general.showBlogSection && { id: "blog", label: "Blog" },
-	general.showWorkSection && {
-		id: "work",
-		label: "Work Experience",
-		shortLabel: "Work",
-	},
-	general.showEducationSection && { id: "education", label: "Education" },
-	general.showHackathonsSection && { id: "hackathons", label: "Hackathons" },
-	general.showContactSection && { id: "contact", label: "Contact" },
-].filter((slide): slide is HomeSlide => Boolean(slide));
-
-const nextSlide = slides[1];
+	general.showContactSection && { id: "contact", label: "Contact me" },
+].find((destination): destination is { id: string; label: string } =>
+	Boolean(destination),
+);
 ---
 
 <Layout
@@ -55,62 +54,55 @@ const nextSlide = slides[1];
   description="DevSecOps and Backend Engineering portfolio covering Secure SDLC, CI/CD security, REST APIs, Kubernetes, and automation."
 >
   <main>
-    <SlideNavigator slides={slides} client:load />
-    <!-- Hero Section (Always visible) -->
-    <Hero hero={heroEntry.data} nextSlide={nextSlide} />
+    <Hero
+      hero={heroEntry.data}
+      primaryCta={primaryCta}
+      showContactCta={general.showContactSection && primaryCta?.id !== "contact"}
+    />
 
-    <!-- Primary content stays visible on mobile for users and mobile-first indexing. -->
-    <div class="contents">
-      <!-- About Section -->
-      {
-        general.showAboutSection && (
-          <About
-            title={aboutEntry.data.title}
-            photo={aboutEntry.data.photo}
-            Content={AboutContent}
-            link={aboutEntry.data.link}
-          />
-        )
-      }
+    {
+      general.showAboutSection && (
+        <About
+          title={aboutEntry.data.title}
+          photo={aboutEntry.data.photo}
+          Content={AboutContent}
+          link={aboutEntry.data.link}
+        />
+      )
+    }
 
-      <!-- Projects Section -->
-      {general.showProjectsSection && <Projects />}
+    {general.showProjectsSection && <Projects projects={featuredProjects} />}
 
-      <!-- Blog Section -->
-      {general.showBlogSection && <Blog />}
+    {
+      showExperience && (
+        <div id="experience">
+          {general.showWorkSection && (
+            <Timeline
+              collection="work"
+              variant="timeline"
+              color="primary"
+              icon={Briefcase}
+              sectionId="work-experience"
+              sectionTitle="Work Experience"
+            />
+          )}
 
-      <!-- Work Experience Section -->
-      {
-        general.showWorkSection && (
-          <Timeline
-            collection="work"
-            variant="timeline"
-            color="primary"
-            icon={Briefcase}
-            sectionTitle="Work Experience"
-          />
-        )
-      }
+          {general.showEducationSection && (
+            <Timeline
+              collection="education"
+              variant="list"
+              color="secondary"
+              backgroundColor="base-300"
+              icon={GraduationCap}
+              sectionTitle="Education"
+            />
+          )}
+        </div>
+      )
+    }
 
-      <!-- Education Section -->
-      {
-        general.showEducationSection && (
-          <Timeline
-            collection="education"
-            variant="list"
-            color="secondary"
-            backgroundColor="base-300"
-            icon={GraduationCap}
-            sectionTitle="Education"
-          />
-        )
-      }
-
-      <!-- Hackathons Section -->
-      {general.showHackathonsSection && <Hackathons />}
-
-      <!-- Contact Section -->
-      {general.showContactSection && <Contact />}
-    </div>
+    {general.showBlogSection && <Blog />}
+    {general.showHackathonsSection && <Hackathons />}
+    {general.showContactSection && <Contact />}
   </main>
 </Layout>

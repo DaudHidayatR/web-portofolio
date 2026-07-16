@@ -1,47 +1,34 @@
 ---
-import { getCollection } from "astro:content";
-import ProjectCard from "./ProjectCard.astro";
+import type { CollectionEntry } from "astro:content";
+import FeaturedProjectPanel from "./FeaturedProjectPanel.astro";
 
-const projectEntries = await getCollection("projects");
+interface Props {
+	projects: CollectionEntry<"projects">[];
+}
 
-// Filter featured projects, sort by start date (most recent first), limit to 3
-const featuredProjects = projectEntries
-	.filter((project) => project.data.featured === true)
-	.sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime())
-	.slice(0, 3);
+const { projects } = Astro.props;
 ---
 
-<section id="projects" data-home-slide class="home-slide py-16 sm:py-20 px-4 bg-base-200">
-  <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl sm:text-4xl font-bold mb-4">Featured DevSecOps & Backend Work</h2>
-      <p class="text-base sm:text-lg text-base-content/70 max-w-3xl mx-auto">
-        Selected projects that document how I build secure delivery workflows,
-        backend services, Kubernetes labs, and automation for practical Secure
-        SDLC learning.
-      </p>
-    </div>
-
-    {
-      featuredProjects.length === 0 ? (
-        <div class="text-center py-12">
-          <p class="text-lg text-base-content/60">
-            No featured projects yet. Check out all projects below.
-          </p>
+<div id="work">
+  {
+    projects.length === 0 ? (
+      <section class="flow-section bg-base-200 px-4 py-20 sm:px-6 sm:py-24" aria-labelledby="featured-work-title">
+        <div class="mx-auto max-w-3xl">
+          <p class="editorial-kicker">Work</p>
+          <h2 id="featured-work-title" class="mt-3 text-3xl font-bold sm:text-4xl">Featured work</h2>
+          <p class="mt-5 text-base-content/70">No featured projects are published yet.</p>
+          <a href="/projects" class="editorial-action-secondary mt-8">View all projects</a>
         </div>
-      ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredProjects.map((project) => (
-            <ProjectCard project={project} />
-          ))}
+      </section>
+    ) : (
+      <>
+        {projects.map((project, index) => (
+          <FeaturedProjectPanel project={project} index={index} />
+        ))}
+        <div class="flow-section border-t editorial-rule bg-base-200 px-4 py-10 text-center sm:px-6">
+          <a href="/projects" class="editorial-action-secondary">View all projects</a>
         </div>
-      )
-    }
-
-    <div class="text-center mt-10">
-      <a href="/projects" class="btn btn-primary btn-outline">
-        View All Projects
-      </a>
-    </div>
-  </div>
-</section>
+      </>
+    )
+  }
+</div>
