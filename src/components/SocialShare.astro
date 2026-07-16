@@ -36,20 +36,20 @@ const shareLinks = [
 ];
 ---
 
-<div aria-labelledby="share-title" class="mt-6 flex flex-col items-center gap-3">
+<div aria-labelledby="share-title" class="mt-6 flex flex-col items-start gap-3">
 	<div class="flex items-center gap-2 text-base-content/70">
 		<Share2 class="size-4" aria-hidden="true" />
 		<h2 id="share-title" class="text-sm font-semibold uppercase tracking-wide">
 			Share portfolio
 		</h2>
 	</div>
-	<nav aria-label="Social sharing options" class="flex flex-wrap justify-center gap-2">
+	<nav aria-label="Social sharing options" class="flex flex-wrap gap-2">
 		{shareLinks.map(({ label, href, Icon }) => (
 			<a
 				href={href}
 				target="_blank"
 				rel="noopener noreferrer nofollow"
-				class="btn btn-xs btn-outline gap-1.5"
+				class="editorial-action-secondary min-h-9 px-3 py-1.5 text-xs"
 				aria-label={label}
 			>
 				<Icon class="size-3.5" aria-hidden="true" />

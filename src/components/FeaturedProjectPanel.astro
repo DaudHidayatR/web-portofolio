@@ -2,15 +2,22 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { ArrowRight, ExternalLink } from "@lucide/astro";
-interface Props { project: CollectionEntry<"projects">; index: number; }
+interface Props {
+	project: CollectionEntry<"projects">;
+	index: number;
+}
 const { project, index } = Astro.props;
 const panelId = `project-${project.id}`;
 const position = String(index + 1).padStart(2, "0");
 const reverseLayout = index % 2 === 1;
-const imageAlt = project.data.imageAlt ?? `${project.data.title} project architecture`;
+const imageAlt =
+	project.data.imageAlt ?? `${project.data.title} project architecture`;
 const imageWidth = project.data.imageWidth ?? project.data.image.width;
 const imageHeight = project.data.imageHeight ?? project.data.image.height;
-const imageClass = project.data.imageDisplay === "diagram" ? "h-full w-full object-contain p-3 sm:p-5" : "h-full w-full object-cover";
+const imageClass =
+	project.data.imageDisplay === "diagram"
+		? "h-full w-full object-contain p-3 sm:p-5"
+		: "h-full w-full object-cover";
 ---
 <section id={panelId} data-featured-project class:list={["snap-panel featured-project-panel border-t editorial-rule px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24", index % 2 === 0 ? "bg-base-200" : "bg-base-100"]} aria-labelledby={`${panelId}-title`}>
   <div class="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,1fr)] lg:gap-16">

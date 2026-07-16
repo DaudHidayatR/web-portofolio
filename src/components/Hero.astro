@@ -5,8 +5,15 @@ import { ArrowRight } from "@lucide/astro";
 import { getIcon } from "../utils/iconMapper";
 import { parseInlineLinks } from "../utils/parseInlineLinks";
 interface Props {
-	hero: { name: string; title: string; description: string; avatar: ImageMetadata | string; location?: string; socialLinks: Array<{ url: string; icon: string; label: string; }>; };
-	primaryCta?: { id: string; label: string; };
+	hero: {
+		name: string;
+		title: string;
+		description: string;
+		avatar: ImageMetadata | string;
+		location?: string;
+		socialLinks: Array<{ url: string; icon: string; label: string }>;
+	};
+	primaryCta?: { id: string; label: string };
 	showContactCta?: boolean;
 }
 const { hero, primaryCta, showContactCta = false } = Astro.props;
@@ -28,7 +35,7 @@ const capabilities = ["Secure SDLC", "Backend Systems", "Cloud & Kubernetes"];
         {hero.location && <span class="text-sm text-base-content/65">{hero.location}</span>}
       </div>
     </div>
-    <figure class="mx-auto w-full max-w-sm lg:max-w-md">
+    <figure class="mx-auto w-full max-w-[17rem] lg:max-w-[22rem]">
       <div class="editorial-frame">
         {typeof hero.avatar === "string" ? <img src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width="480" height="600" loading="eager" decoding="async" fetchpriority="high" data-image-component /> : <Image src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width={480} height={600} loading="eager" decoding="async" fetchpriority="high" data-image-component />}
       </div>

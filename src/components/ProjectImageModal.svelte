@@ -19,15 +19,15 @@ let open = $state(false);
 
 {#if open}
 	<div class="modal modal-open" role="dialog" aria-label={`Zoomed image: ${alt}`}>
-		<div class="modal-box max-w-[96vw] bg-base-100 p-3 shadow-2xl">
+		<div class="max-w-[96vw] rounded-box border editorial-rule bg-base-100 p-3">
 			<div class="mb-3 flex justify-end">
-				<button class="btn btn-circle btn-sm" aria-label="Close image zoom" type="button" onclick={() => (open = false)}>
+				<button class="editorial-action-secondary size-10 min-h-10 justify-center p-0" aria-label="Close image zoom" type="button" onclick={() => (open = false)}>
 					x
 				</button>
 			</div>
 			<img
 				alt={alt}
-				class="max-h-[82vh] w-full rounded-xl object-contain"
+				class="max-h-[82vh] w-full rounded-box object-contain"
 				decoding="async"
 				loading="lazy"
 				src={image}

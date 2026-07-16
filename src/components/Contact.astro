@@ -7,7 +7,9 @@ const contactEntry = await getEntry("contact", "index");
 const contact = contactEntry.data;
 const { Content } = await render(contactEntry);
 const heroEntry = await getEntry("hero", "index");
-const profileLinks = heroEntry.data.socialLinks.filter((link) => link.url !== contact.linkUrl);
+const profileLinks = heroEntry.data.socialLinks.filter(
+	(link) => link.url !== contact.linkUrl,
+);
 const FooterIcon = getIcon(contact.footerIcon as any);
 ---
 <footer id="contact" class="snap-panel contact-panel flex border-t editorial-rule px-4 py-16 sm:px-6 sm:py-20 lg:px-8" aria-labelledby="contact-title">

@@ -40,34 +40,103 @@
 	--noise: 0;
 }
 
-:root { --site-header-height: 4rem; }
+:root {
+	--site-header-height: 4rem;
+}
 html {
 	overflow-x: hidden;
 	scroll-behavior: smooth;
-	scroll-padding-block-start: calc(var(--site-header-height) + env(safe-area-inset-top));
+	scroll-padding-block-start: calc(
+		var(--site-header-height) +
+		env(safe-area-inset-top)
+	);
 }
-body { overflow-x: clip; }
+body {
+	overflow-x: clip;
+}
 
 @layer components {
-	.editorial-kicker { @apply font-mono text-xs font-semibold uppercase tracking-[0.2em] text-primary; }
-	.editorial-link { @apply underline decoration-current/40 underline-offset-4 hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary; }
-	.editorial-action { @apply inline-flex min-h-10 items-center gap-2 border border-current bg-primary px-4 py-2 text-sm font-semibold text-primary-content hover:bg-transparent hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary; }
-	.editorial-action-secondary { @apply inline-flex min-h-10 items-center gap-2 border border-current px-4 py-2 text-sm font-semibold hover:bg-base-content hover:text-base-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary; }
-	.editorial-frame { @apply overflow-hidden rounded-box border border-base-content/35 bg-base-200; }
-	.editorial-rule { @apply border-base-content/30; }
-	.editorial-action, .editorial-action-secondary, .editorial-link { transition: color 150ms, background-color 150ms, border-color 150ms; }
+	.editorial-kicker {
+		@apply font-mono text-xs font-semibold uppercase tracking-[0.2em] text-primary;
+	}
+	.editorial-link {
+		@apply underline decoration-current/40 underline-offset-4 hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary;
+	}
+	.editorial-action {
+		@apply inline-flex min-h-10 items-center gap-2 border border-current bg-primary px-4 py-2 text-sm font-semibold text-primary-content hover:bg-transparent hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+	}
+	.editorial-action-secondary {
+		@apply inline-flex min-h-10 items-center gap-2 border border-current px-4 py-2 text-sm font-semibold hover:bg-base-content hover:text-base-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+	}
+	.editorial-frame {
+		@apply overflow-hidden rounded-box border border-base-content/35 bg-base-200;
+	}
+	.editorial-rule {
+		@apply border-base-content/30;
+	}
+	.editorial-action,
+	.editorial-action-secondary,
+	.editorial-link {
+		transition:
+			color 150ms,
+			background-color 150ms,
+			border-color 150ms;
+	}
 }
-.snap-panel { position: relative; scroll-snap-align: none; }
-.hero-panel, .contact-panel { min-block-size: calc(100vh - var(--site-header-height) - env(safe-area-inset-top)); }
-.flow-section { min-block-size: auto; scroll-snap-align: none; }
-.viewport-page { min-block-size: calc(100vh - var(--site-header-height) - env(safe-area-inset-top)); }
+.snap-panel {
+	position: relative;
+	scroll-snap-align: none;
+}
+.hero-panel,
+.contact-panel {
+	min-block-size: calc(
+		100vh -
+		var(--site-header-height) -
+		env(safe-area-inset-top)
+	);
+}
+.flow-section {
+	min-block-size: auto;
+	scroll-snap-align: none;
+}
+.viewport-page {
+	min-block-size: calc(
+		100vh -
+		var(--site-header-height) -
+		env(safe-area-inset-top)
+	);
+}
 @supports (min-block-size: 100svh) {
-	.viewport-page, .hero-panel, .contact-panel { min-block-size: calc(100svh - var(--site-header-height) - env(safe-area-inset-top)); }
+	.viewport-page,
+	.hero-panel,
+	.contact-panel {
+		min-block-size: calc(
+			100svh -
+			var(--site-header-height) -
+			env(safe-area-inset-top)
+		);
+	}
 }
 @media (prefers-reduced-motion: reduce) {
-	html { scroll-behavior: auto; scroll-snap-type: none; }
-	.editorial-action, .editorial-action-secondary, .editorial-link { transition: none; }
+	html {
+		scroll-behavior: auto;
+		scroll-snap-type: none;
+	}
+	.editorial-action,
+	.editorial-action-secondary,
+	.editorial-link {
+		transition: none;
+	}
 }
-img, svg, video, canvas { max-width: 100%; }
-.text-balance { text-wrap: balance; }
-.prose { overflow-wrap: anywhere; }
+img,
+svg,
+video,
+canvas {
+	max-width: 100%;
+}
+.text-balance {
+	text-wrap: balance;
+}
+.prose {
+	overflow-wrap: anywhere;
+}
