@@ -22,7 +22,7 @@ const { hero, primaryCta, showContactCta = false } = Astro.props;
   <div class="mx-auto grid w-full max-w-7xl items-center gap-8 xl:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.75fr)] xl:gap-14">
     <div class="max-w-3xl">
       <p class="editorial-kicker">{hero.title}</p>
-      <h1 id="hero-title" class="mt-4 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-balance sm:text-6xl xl:text-[4rem]">DevSecOps and backend engineering, from code to production.</h1>
+      <h1 id="hero-title" class="mt-4 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-balance sm:text-6xl xl:text-[4rem]">Securing applications through automated delivery.</h1>
       <p class="editorial-secondary mt-5 max-w-2xl text-base leading-relaxed sm:text-xl" set:html={parseInlineLinks(hero.description)} />
       <div class="mt-6 flex flex-wrap gap-3">
         {primaryCta && <a href={`#${primaryCta.id}`} class="editorial-action">{primaryCta.label}<ArrowRight class="size-4" aria-hidden="true" /></a>}

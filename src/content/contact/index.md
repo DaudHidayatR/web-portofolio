@@ -3,8 +3,8 @@ icon: Mail
 linkUrl: mailto:me@daudhr.com
 linkText: by email
 footerIcon: Heart
-footerText: Built as an owned DevSecOps & Backend portfolio by
+footerText: Built by Application Security Engineer
 footerLinkText: Daud Hidayat Ramadhan
 footerLinkUrl: https://daudhr.com
 ---
-Want to discuss backend engineering, Secure SDLC, DevSecOps pipelines, or a collaboration opportunity? Reach out
+Want to discuss application security, DevSecOps security automation, backend engineering, or a collaboration opportunity? Reach out
