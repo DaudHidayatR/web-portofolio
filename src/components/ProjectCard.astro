@@ -45,15 +45,15 @@ function formatPeriod(startDate: Date, endDate?: Date) {
       <a href={`/projects/${project.id}`}>{project.data.title}</a>
     </h3>
     <div class="flex items-center gap-2 flex-wrap">
-      <time class="text-sm text-base-content/60">
+      <time class="editorial-muted text-sm">
         {formatPeriod(project.data.startDate, project.data.endDate)}
       </time>
       {categoryLabel && (
         <span class="border-l editorial-rule pl-2 text-sm">{categoryLabel}</span>
       )}
     </div>
-    <p class="text-base-content/80">{project.data.description}</p>
-    <ul class="mt-3 flex flex-wrap gap-x-2 text-sm text-base-content/70">
+    <p class="editorial-secondary">{project.data.description}</p>
+    <ul class="editorial-muted mt-3 flex flex-wrap gap-x-2 text-sm">
       {project.data.skills.map((skill, index) => <li>{skill}{index < project.data.skills.length - 1 && " /"}</li>)}
     </ul>
     <div class="mt-5 flex flex-wrap justify-end gap-2">
@@ -63,7 +63,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
             href={project.data.demoLink}
             target="_blank"
             rel="noopener noreferrer"
-            class="editorial-action-secondary"
+            class="editorial-action-link"
           >
             <ExternalLink class="size-4" />
             Demo
@@ -76,7 +76,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
             href={project.data.sourceLink}
             target="_blank"
             rel="noopener noreferrer"
-            class="editorial-action-secondary"
+            class="editorial-action-link"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

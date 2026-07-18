@@ -40,19 +40,19 @@ const { project, view, period }: Props = $props();
 			<a href={project.href}>{project.title}</a>
 		</h3>
 		<div class="flex flex-wrap items-center gap-2">
-			<time class="text-sm text-base-content/60">{period}</time>
+			<time class="editorial-muted text-sm">{period}</time>
 			{#if project.categoryLabel}
 				<span class="border-l editorial-rule pl-2 text-sm">{project.categoryLabel}</span>
 			{/if}
 		</div>
-		<p class="text-base-content/80">{project.description}</p>
-		<ul class="mt-3 flex flex-wrap gap-x-2 text-sm text-base-content/70">
+		<p class="editorial-secondary">{project.description}</p>
+		<ul class="editorial-muted mt-3 flex flex-wrap gap-x-2 text-sm">
 			{#each project.skills as skill, index}<li>{skill}{index < project.skills.length - 1 ? " /" : ""}</li>{/each}
 		</ul>
 		<div class="mt-5 flex flex-wrap justify-end gap-2">
 			{#if project.demoLink}
 				<a
-					class="editorial-action-secondary"
+					class="editorial-action-link"
 					href={project.demoLink}
 					rel="noopener noreferrer"
 					target="_blank"
@@ -62,7 +62,7 @@ const { project, view, period }: Props = $props();
 			{/if}
 			{#if project.sourceLink}
 				<a
-					class="editorial-action-secondary"
+					class="editorial-action-link"
 					href={project.sourceLink}
 					rel="noopener noreferrer"
 					target="_blank"

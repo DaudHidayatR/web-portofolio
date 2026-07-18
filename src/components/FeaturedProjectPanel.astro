@@ -14,24 +14,24 @@ const imageAlt =
 	project.data.imageAlt ?? `${project.data.title} project architecture`;
 const imageWidth = project.data.imageWidth ?? project.data.image.width;
 const imageHeight = project.data.imageHeight ?? project.data.image.height;
-const imageClass =
-	project.data.imageDisplay === "diagram"
-		? "h-full w-full object-contain p-3 sm:p-5"
-		: "h-full w-full object-cover";
+const isDiagram = project.data.imageDisplay === "diagram";
+const imageClass = isDiagram
+	? "h-auto w-full object-contain p-3 sm:p-5"
+	: "h-full w-full object-cover";
 ---
 <section id={panelId} data-featured-project class:list={["snap-panel featured-project-panel border-t editorial-rule px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24", index % 2 === 0 ? "bg-base-200" : "bg-base-100"]} aria-labelledby={`${panelId}-title`}>
   <div class="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,1fr)] lg:gap-16">
     <div class:list={["min-w-0", reverseLayout && "lg:order-2"]}>
-      <div class="mb-6 flex justify-between border-b editorial-rule pb-3 font-mono text-xs uppercase tracking-[0.18em] text-base-content/65"><span>Project {position}</span><span>{project.data.startDate.getFullYear()}</span></div>
+      <div class="mb-5 flex justify-between font-mono text-xs uppercase tracking-[0.18em] editorial-muted"><span>Project {position}</span><span>{project.data.startDate.getFullYear()}</span></div>
       <h2 id={`${panelId}-title`} class="max-w-3xl text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">{project.data.title}</h2>
-      <p class="mt-5 max-w-2xl text-base leading-relaxed text-base-content/75 sm:text-lg">{project.data.description}</p>
-      {(project.data.challenge || project.data.contribution) && <dl class="mt-8 grid border-y editorial-rule sm:grid-cols-2">
-        {project.data.challenge && <div class="py-5 sm:border-r sm:pr-6 editorial-rule"><dt class="editorial-kicker">Challenge</dt><dd class="mt-2 leading-relaxed text-base-content/75">{project.data.challenge}</dd></div>}
-        {project.data.contribution && <div class="border-t py-5 editorial-rule sm:border-t-0 sm:pl-6"><dt class="editorial-kicker">Contribution</dt><dd class="mt-2 leading-relaxed text-base-content/75">{project.data.contribution}</dd></div>}
+      <p class="editorial-secondary mt-5 max-w-2xl text-base leading-relaxed sm:text-lg">{project.data.description}</p>
+      {(project.data.challenge || project.data.contribution) && <dl class="mt-8 grid border-t editorial-rule sm:grid-cols-2">
+        {project.data.challenge && <div class="py-5 sm:pr-6"><dt class="editorial-kicker">Challenge</dt><dd class="editorial-secondary mt-2 leading-relaxed">{project.data.challenge}</dd></div>}
+        {project.data.contribution && <div class="py-5 sm:pl-6"><dt class="editorial-kicker">Contribution</dt><dd class="editorial-secondary mt-2 leading-relaxed">{project.data.contribution}</dd></div>}
       </dl>}
-      <div class="mt-7"><h3 class="editorial-kicker text-base-content/65">Technology</h3><ul class="mt-3 flex flex-wrap gap-x-2 text-sm" aria-label={`${project.data.title} technologies`}>{project.data.skills.map((skill, i) => <li>{skill}{i < project.data.skills.length - 1 && <span class="ml-2 text-base-content/40">/</span>}</li>)}</ul></div>
-      <div class="mt-8 flex flex-wrap gap-3"><a href={`/projects/${project.id}`} class="editorial-action">Read case study<ArrowRight class="size-4" aria-hidden="true" /></a>{project.data.demoLink && <a href={project.data.demoLink} target="_blank" rel="noopener noreferrer" class="editorial-action-secondary">Live demo<ExternalLink class="size-4" aria-hidden="true" /></a>}{project.data.sourceLink && <a href={project.data.sourceLink} target="_blank" rel="noopener noreferrer" class="editorial-action-secondary">Source<ExternalLink class="size-4" aria-hidden="true" /></a>}</div>
+      <div class="mt-6"><h3 class="editorial-kicker editorial-muted">Technology</h3><ul class="mt-3 flex flex-wrap gap-x-2 text-sm" aria-label={`${project.data.title} technologies`}>{project.data.skills.map((skill, i) => <li>{skill}{i < project.data.skills.length - 1 && <span class="editorial-muted ml-2">/</span>}</li>)}</ul></div>
+      <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2"><a href={`/projects/${project.id}`} class="editorial-action">Read case study<ArrowRight class="size-4" aria-hidden="true" /></a>{project.data.demoLink && <a href={project.data.demoLink} target="_blank" rel="noopener noreferrer" class="editorial-action-link">Live demo<ExternalLink class="size-4" aria-hidden="true" /></a>}{project.data.sourceLink && <a href={project.data.sourceLink} target="_blank" rel="noopener noreferrer" class="editorial-action-link">Source<ExternalLink class="size-4" aria-hidden="true" /></a>}</div>
     </div>
-    <figure class:list={["editorial-frame order-last", reverseLayout && "lg:order-1"]}><div class="aspect-[16/10]"><Image src={project.data.image} alt={imageAlt} class={imageClass} width={imageWidth} height={imageHeight} loading="lazy" decoding="async" data-image-component /></div></figure>
+    <figure class:list={["editorial-frame order-last", reverseLayout && "lg:order-1"]}><div class:list={[!isDiagram && "aspect-[16/10]"]}><Image src={project.data.image} alt={imageAlt} class={imageClass} width={imageWidth} height={imageHeight} loading="lazy" decoding="async" data-image-component /></div></figure>
   </div>
 </section>

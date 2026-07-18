@@ -216,10 +216,10 @@ const projectJsonLd = {
     <!-- Project Header -->
     <header class="mb-8">
       <h1 class="text-5xl font-bold mb-4">{title}</h1>
-      <p class="text-xl text-base-content/70 mb-6">{description}</p>
+      <p class="editorial-secondary mb-6 text-xl">{description}</p>
 
       <div
-        class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-6"
+        class="editorial-muted mb-6 flex flex-wrap items-center gap-4 text-sm"
       >
         <span class="font-semibold">{formatPeriod(startDate, endDate)}</span>
         <span>•</span>
@@ -254,7 +254,7 @@ const projectJsonLd = {
                 href={sourceLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="editorial-action-secondary"
+                class="editorial-action-link"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -276,7 +276,7 @@ const projectJsonLd = {
     <!-- Tech Stack Showcase -->
     {
       skills && skills.length > 0 && (
-        <div class="mb-8 border-y editorial-rule py-6">
+        <div class="mb-8 border-t editorial-rule py-6">
           <div>
             <h2 class="editorial-kicker mb-3">Tech Stack</h2>
             <ul class="flex flex-wrap gap-x-2 text-sm">

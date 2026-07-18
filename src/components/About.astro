@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import { ExternalLink } from "@lucide/astro";
 import type { ImageMetadata } from "astro";
+import { ExternalLink } from "@lucide/astro";
 interface Props {
 	title: string;
 	photo?: ImageMetadata | string;
@@ -17,11 +17,11 @@ const capabilities = [
 ];
 ---
 <section id="about" class="flow-section border-t editorial-rule px-4 py-20 sm:px-6 sm:py-24 lg:px-8" aria-labelledby="about-title">
-  <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-16">
-    <div><p class="editorial-kicker">02 / About</p><h2 id="about-title" class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2><article class="prose mt-6 max-w-3xl prose-a:text-primary prose-a:underline"><Content /></article>
-      <div class="mt-8"><h3 class="editorial-kicker text-base-content/65">Capabilities</h3><ol class="mt-4 border-t editorial-rule">{capabilities.map((capability, index) => <li class="grid grid-cols-[3rem_1fr] border-b editorial-rule py-3 font-medium"><span class="font-mono text-base-content/55">{String(index + 1).padStart(2, "0")}</span>{capability}</li>)}</ol></div>
-      {link && <a href={link} target="_blank" rel="noopener noreferrer" class="editorial-action-secondary mt-8" aria-label="More about me on LinkedIn">More about me<ExternalLink class="size-4" aria-hidden="true" /></a>}
+  <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-16">
+    <div><p class="editorial-kicker">01 / About</p><h2 id="about-title" class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2><article class="prose mt-6 max-w-3xl prose-a:text-primary prose-a:underline"><Content /></article>
+      <div class="mt-8"><h3 class="editorial-kicker editorial-muted">Capabilities</h3><ol class="mt-4">{capabilities.map((capability, index) => <li class="grid grid-cols-[3rem_1fr] border-b editorial-rule py-3 font-medium"><span class="editorial-muted font-mono">{String(index + 1).padStart(2, "0")}</span>{capability}</li>)}</ol></div>
+      {link && <a href={link} target="_blank" rel="noopener noreferrer" class="editorial-action-link mt-6" aria-label="More about me on LinkedIn">More about me<ExternalLink class="size-4" aria-hidden="true" /></a>}
     </div>
-    {photo && <figure class="editorial-frame">{typeof photo === "string" ? <img src={photo} alt={photoAlt} class="aspect-[4/5] h-full w-full object-cover object-top" width="360" height="450" loading="lazy" decoding="async" data-image-component /> : <Image src={photo} alt={photoAlt} class="aspect-[4/5] h-full w-full object-cover object-top" width={360} height={450} loading="lazy" decoding="async" data-image-component />}</figure>}
+    {photo && <figure class="editorial-frame mx-auto w-full max-w-[18rem]">{typeof photo === "string" ? <img src={photo} alt={photoAlt} class="aspect-[4/5] h-full w-full object-cover object-top" width="360" height="450" loading="lazy" decoding="async" data-image-component /> : <Image src={photo} alt={photoAlt} class="aspect-[4/5] h-full w-full object-cover object-top" width={360} height={450} loading="lazy" decoding="async" data-image-component />}</figure>}
   </div>
 </section>
