@@ -1,6 +1,6 @@
 ---
 title: Badan Sistem Informasi UII
-subtitle: Security Engineer — SOC/CISRT Team
+subtitle: Application Security Engineer — SOC/CISRT Team
 location: 🇮🇩 Yogyakarta, Indonesia
 startDate: 2026-01-01
 logo: '@assets/work/logo-uii-asli.webp'
