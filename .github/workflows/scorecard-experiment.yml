@@ -1,0 +1,49 @@
+name: OpenSSF Scorecard Experiment
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "30 1 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scorecard:
+    name: Supply Chain - OpenSSF Scorecard (Optional)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Run OpenSSF Scorecard
+        id: scorecard
+        continue-on-error: true
+        uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3
+        with:
+          results_file: scorecard-results.json
+          results_format: json
+          publish_results: false
+
+      - name: Upload Scorecard results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openssf-scorecard-results
+          path: scorecard-results.json
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Report experiment status
+        if: always()
+        env:
+          SCORECARD_OUTCOME: ${{ steps.scorecard.outcome }}
+        run: |
+          echo "OpenSSF Scorecard outcome: $SCORECARD_OUTCOME"
+          echo "This experiment is informational and does not block deployment."
+          echo "Review individual checks; do not gate on the aggregate score."
