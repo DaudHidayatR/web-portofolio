@@ -30,12 +30,59 @@ jobs:
           results_format: json
           publish_results: false
 
+      - name: Create human-readable summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          source = Path("scorecard-results.json")
+          report = Path("scorecard-summary.md")
+
+          if not source.is_file():
+              report.write_text(
+                  "# OpenSSF Scorecard Summary\n\n"
+                  "> Scorecard did not produce a JSON result. Review the workflow log.\n"
+              )
+          else:
+              data = json.loads(source.read_text())
+              repository = data.get("repo", {}).get("name", "unknown")
+              commit = data.get("repo", {}).get("commit", "unknown")
+              score = data.get("score", "not available")
+              checks = sorted(data.get("checks", []), key=lambda item: (item.get("score", -1), item.get("name", "")))
+
+              lines = [
+                  "# OpenSSF Scorecard Summary",
+                  "",
+                  f"- **Repository:** `{repository}`",
+                  f"- **Commit:** `{commit}`",
+                  f"- **Aggregate score:** **{score}/10**",
+                  "",
+                  "> The aggregate score is informational. Review individual checks and evidence before making a decision.",
+                  "",
+                  "| Check | Score | Result |",
+                  "| --- | ---: | --- |",
+              ]
+              for check in checks:
+                  name = str(check.get("name", "unknown")).replace("|", "\\|")
+                  check_score = check.get("score", "N/A")
+                  reason = str(check.get("reason", "No reason provided")).replace("|", "\\|").replace("\n", " ")
+                  lines.append(f"| {name} | {check_score} | {reason} |")
+
+              report.write_text("\n".join(lines) + "\n")
+          PY
+
+          cat scorecard-summary.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload Scorecard results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: openssf-scorecard-results
-          path: scorecard-results.json
+          path: |
+            scorecard-results.json
+            scorecard-summary.md
           if-no-files-found: warn
           retention-days: 7
 
