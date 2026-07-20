@@ -35,7 +35,7 @@ const { hero, primaryCta, showContactCta = false } = Astro.props;
     </div>
     <figure class="mx-auto w-full max-w-[14rem] xl:max-w-[19rem]">
       <div class="editorial-frame">
-        {typeof hero.avatar === "string" ? <img src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width="480" height="600" loading="eager" decoding="async" fetchpriority="high" data-image-component /> : <Image src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width={480} height={600} loading="eager" decoding="async" fetchpriority="high" data-image-component />}
+        {typeof hero.avatar === "string" ? <img src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width="480" height="600" loading="eager" fetchpriority="high" data-image-component /> : <Image src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width={480} height={600} loading="eager" fetchpriority="high" data-image-component />}
       </div>
       <figcaption class="py-2"><span class="font-semibold">{hero.name}</span><span class="editorial-muted ml-2 text-sm">{hero.title}</span></figcaption>
     </figure>
