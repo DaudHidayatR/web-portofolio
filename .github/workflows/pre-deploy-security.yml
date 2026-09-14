@@ -2,38 +2,59 @@ name: Pre-Deploy Security Pipeline
 
 on:
   push:
-    branches: [master, main]
+    branches:
+      - master
+      - main
+
   pull_request:
+
   workflow_dispatch:
 
 env:
   APP_DIR: .
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/web-portofolio
 
+# Default to minimum permissions.
+# Individual jobs receive additional permissions only when needed.
 permissions:
   contents: read
-  packages: write
-  security-events: write
-  id-token: write
-  attestations: write
 
 defaults:
   run:
     shell: bash
 
+
+# ============================================================
+# STAGE 1
+# Build Artifact + SCA + SBOM
+# ============================================================
 jobs:
   build-artifact-sca-sbom:
     name: Stage 1 - Build Artifact, SCA, SBOM
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
+      # ------------------------------------------------------
+      # Checkout
+      # ------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ------------------------------------------------------
+      # Runtime
+      # ------------------------------------------------------
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
+      # ------------------------------------------------------
+      # Dependencies
+      # ------------------------------------------------------
       - name: Install dependencies
         working-directory: ${{ env.APP_DIR }}
         run: |
@@ -43,10 +64,16 @@ jobs:
             bun install
           fi
 
+      # ------------------------------------------------------
+      # Build
+      # ------------------------------------------------------
       - name: Build web artifact
         working-directory: ${{ env.APP_DIR }}
         run: bun run build
 
+      # ------------------------------------------------------
+      # Preserve Build Artifact
+      # ------------------------------------------------------
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -55,33 +82,12 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: SCA scan with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: ${{ env.APP_DIR }}
-          format: sarif
-          output: trivy-sca.sarif
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          exit-code: 1
-
-      - name: Check Trivy SCA SARIF exists
-        id: sca-sarif
-        if: always()
-        run: |
-          if [ -s trivy-sca.sarif ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Upload Trivy SCA SARIF
-        if: steps.sca-sarif.outputs.exists == 'true'
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: trivy-sca.sarif
-
+      # ------------------------------------------------------
+      # SBOM
+      #
+      # Generate this BEFORE the blocking security gate.
+      # This means failed builds still leave useful evidence.
+      # ------------------------------------------------------
       - name: Create SBOM with Syft
         uses: anchore/sbom-action@v0
         with:
@@ -95,20 +101,126 @@ jobs:
           name: sbom-spdx
           path: sbom.spdx.json
           if-no-files-found: error
+          retention-days: 14
 
+      # ------------------------------------------------------
+      # SCA REPORT
+      #
+      # Reporting != Enforcement
+      #
+      # All severities are written to SARIF.
+      # Findings do NOT fail this step.
+      # ------------------------------------------------------
+      - name: Trivy SCA - Generate SARIF report
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: ${{ env.APP_DIR }}
+
+          # SCA only.
+          # Secret scanning is handled separately.
+          scanners: vuln
+
+          format: sarif
+          output: trivy-sca.sarif
+
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+
+          ignore-unfixed: true
+
+          # Report only.
+          # Findings should not stop the pipeline here.
+          exit-code: "0"
+
+      # ------------------------------------------------------
+      # Check SARIF
+      # ------------------------------------------------------
+      - name: Check Trivy SCA SARIF exists
+        id: sca-sarif
+        if: always()
+        run: |
+          if [ -s trivy-sca.sarif ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ------------------------------------------------------
+      # Upload SARIF
+      #
+      # Skip fork PR because GITHUB_TOKEN is read-only there.
+      # ------------------------------------------------------
+      - name: Upload Trivy SCA SARIF
+        if: >-
+          ${{
+            always() &&
+            steps.sca-sarif.outputs.exists == 'true' &&
+            (
+              github.event_name != 'pull_request' ||
+              github.event.pull_request.head.repo.full_name == github.repository
+            )
+          }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-sca.sarif
+          category: trivy-sca
+
+      # ------------------------------------------------------
+      # SCA SECURITY GATE
+      #
+      # HIGH / CRITICAL vulnerabilities stop the pipeline.
+      # ------------------------------------------------------
+      - name: Trivy SCA - Security Gate
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: ${{ env.APP_DIR }}
+
+          scanners: vuln
+
+          format: table
+
+          severity: CRITICAL,HIGH
+
+          ignore-unfixed: true
+
+          # SECURITY GATE
+          exit-code: "1"
+
+
+  # ==========================================================
+  # STAGE 2
+  # SAST + Unit Test + Container Image Security
+  # ==========================================================
   software-testing:
     name: Stage 2 - SAST, Unit Test, Image Scan
     runs-on: ubuntu-latest
-    needs: build-artifact-sca-sbom
+
+    needs:
+      - build-artifact-sca-sbom
+
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
+      # ------------------------------------------------------
+      # Checkout
+      # ------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ------------------------------------------------------
+      # Runtime
+      # ------------------------------------------------------
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
+      # ------------------------------------------------------
+      # Dependencies
+      # ------------------------------------------------------
       - name: Install dependencies
         working-directory: ${{ env.APP_DIR }}
         run: |
@@ -118,6 +230,9 @@ jobs:
             bun install
           fi
 
+      # ------------------------------------------------------
+      # SAST
+      # ------------------------------------------------------
       - name: SAST scan with Semgrep
         uses: semgrep/semgrep-action@v1
         with:
@@ -127,6 +242,9 @@ jobs:
             p/typescript
             p/secrets
 
+      # ------------------------------------------------------
+      # Unit Test
+      # ------------------------------------------------------
       - name: Run unit tests when present
         working-directory: ${{ env.APP_DIR }}
         run: |
@@ -136,28 +254,56 @@ jobs:
             echo "No test script found; skipping unit tests."
           fi
 
+      # ------------------------------------------------------
+      # Normalize GHCR image name
+      # ------------------------------------------------------
       - name: Set lowercase image name
         id: image
-        run: echo "name=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+        run: |
+          IMAGE="$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')"
+          echo "name=$IMAGE" >> "$GITHUB_OUTPUT"
 
+      # ------------------------------------------------------
+      # Build container
+      #
+      # Image remains local and is scanned before Stage 3.
+      # ------------------------------------------------------
       - name: Build container image for scanning
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
           load: true
+          push: false
           tags: ${{ steps.image.outputs.name }}:${{ github.sha }}
 
-      - name: Image scan with Trivy
-        uses: aquasecurity/trivy-action@master
+      # ------------------------------------------------------
+      # IMAGE SECURITY REPORT
+      #
+      # Scan both:
+      # - OS/application vulnerabilities
+      # - secrets accidentally copied into image
+      # ------------------------------------------------------
+      - name: Trivy Image - Generate SARIF report
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ steps.image.outputs.name }}:${{ github.sha }}
+
+          scanners: vuln,secret
+
           format: sarif
           output: trivy-image.sarif
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          exit-code: 1
 
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+
+          ignore-unfixed: true
+
+          # Reporting only.
+          exit-code: "0"
+
+      # ------------------------------------------------------
+      # Check image SARIF
+      # ------------------------------------------------------
       - name: Check Trivy image SARIF exists
         id: image-sarif
         if: always()
@@ -168,68 +314,183 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # ------------------------------------------------------
+      # Upload Image SARIF
+      # ------------------------------------------------------
       - name: Upload Trivy image SARIF
-        if: steps.image-sarif.outputs.exists == 'true'
+        if: >-
+          ${{
+            always() &&
+            steps.image-sarif.outputs.exists == 'true' &&
+            (
+              github.event_name != 'pull_request' ||
+              github.event.pull_request.head.repo.full_name == github.repository
+            )
+          }}
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-image.sarif
+          category: trivy-container-image
 
+      # ------------------------------------------------------
+      # IMAGE SECURITY GATE
+      #
+      # HIGH / CRITICAL vulnerabilities or serious secret
+      # findings block progression to supply-chain stage.
+      # ------------------------------------------------------
+      - name: Trivy Image - Security Gate
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ steps.image.outputs.name }}:${{ github.sha }}
+
+          scanners: vuln,secret
+
+          format: table
+
+          severity: CRITICAL,HIGH
+
+          ignore-unfixed: true
+
+          exit-code: "1"
+
+
+  # ==========================================================
+  # STAGE 3
+  # Policy as Code + Supply Chain Security
+  # ==========================================================
   supply-chain-state:
     name: Stage 3 - PaC, SLSA, Image Signing
     runs-on: ubuntu-latest
-    needs: software-testing
+
+    needs:
+      - software-testing
+
+    # Don't publish/sign images from PRs.
     if: github.event_name != 'pull_request'
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+
     steps:
+      # ------------------------------------------------------
+      # Checkout
+      # ------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ------------------------------------------------------
+      # Normalize image name
+      # ------------------------------------------------------
       - name: Set lowercase image name
         id: image
-        run: echo "name=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+        run: |
+          IMAGE="$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')"
+          echo "name=$IMAGE" >> "$GITHUB_OUTPUT"
 
+      # ======================================================
+      # Policy as Code - Conftest / OPA
+      # ======================================================
       - name: Install Conftest
         run: |
-          CONFTEST_VERSION=0.56.0
+          set -euo pipefail
+
+          CONFTEST_VERSION="0.56.0"
           CONFTEST_TARBALL="conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
-          curl -sSL \
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
             "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/${CONFTEST_TARBALL}" \
-            -o conftest.tar.gz
+            --output conftest.tar.gz
+
           tar -xzf conftest.tar.gz conftest
+
           sudo mv conftest /usr/local/bin/conftest
+
           conftest --version
 
       - name: PaC scan with Conftest when policies exist
         run: |
+          set -euo pipefail
+
           if compgen -G "policies/*.rego" > /dev/null; then
-            find . -type f \( -name '*.yaml' -o -name '*.yml' -o -name '*.json' \) \
-              -not -path './node_modules/*' \
-              -not -path './dist/*' \
-              -not -path './.astro/*' \
-              -print0 | xargs -0 conftest test --policy policies
+
+            mapfile -d '' resources < <(
+              find . \
+                -type f \
+                \( \
+                  -name '*.yaml' \
+                  -o -name '*.yml' \
+                  -o -name '*.json' \
+                \) \
+                -not -path './node_modules/*' \
+                -not -path './dist/*' \
+                -not -path './.astro/*' \
+                -not -path './.git/*' \
+                -not -path './policies/*' \
+                -print0
+            )
+
+            if [ "${#resources[@]}" -gt 0 ]; then
+              conftest test \
+                --policy policies \
+                "${resources[@]}"
+            else
+              echo "No resources found for Conftest."
+            fi
+
           else
             echo "No Rego policies found in policies/*.rego; skipping Conftest."
           fi
 
+      # ======================================================
+      # Policy as Code - Kyverno
+      # ======================================================
       - name: Install Kyverno CLI
         uses: kyverno/action-install-cli@v0.2.0
 
       - name: PaC scan with Kyverno when policies exist
         run: |
-          if compgen -G "kyverno-policies/*.yaml" > /dev/null || compgen -G "kyverno-policies/*.yml" > /dev/null; then
-            mapfile -t resources < <(find . -type f \( -name '*.yaml' -o -name '*.yml' \) \
-              -not -path './node_modules/*' \
-              -not -path './dist/*' \
-              -not -path './.astro/*' \
-              -not -path './kyverno-policies/*')
+          set -euo pipefail
+
+          if compgen -G "kyverno-policies/*.yaml" > /dev/null ||
+             compgen -G "kyverno-policies/*.yml" > /dev/null; then
+
+            mapfile -t resources < <(
+              find . \
+                -type f \
+                \( \
+                  -name '*.yaml' \
+                  -o -name '*.yml' \
+                \) \
+                -not -path './node_modules/*' \
+                -not -path './dist/*' \
+                -not -path './.astro/*' \
+                -not -path './.git/*' \
+                -not -path './kyverno-policies/*'
+            )
+
             if [ "${#resources[@]}" -gt 0 ]; then
-              kyverno apply kyverno-policies --resource "${resources[@]}"
+
+              kyverno apply kyverno-policies \
+                --resource "${resources[@]}"
+
             else
               echo "No YAML resources found for Kyverno."
             fi
+
           else
             echo "No Kyverno policies found in kyverno-policies/; skipping Kyverno."
           fi
 
+      # ======================================================
+      # Container Supply Chain
+      # ======================================================
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -240,19 +501,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ------------------------------------------------------
+      # Build + Push
+      #
+      # SHA is immutable/referenceable.
+      # latest remains convenience tag only.
+      # ------------------------------------------------------
       - name: Build and push image with provenance and SBOM
         id: push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
+
           push: true
+
           provenance: true
           sbom: true
+
           tags: |
             ${{ steps.image.outputs.name }}:${{ github.sha }}
             ${{ steps.image.outputs.name }}:latest
 
+      # ------------------------------------------------------
+      # GitHub Build Provenance Attestation
+      # ------------------------------------------------------
       - name: Create SLSA provenance attestation
         uses: actions/attest-build-provenance@v2
         with:
@@ -260,44 +533,95 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
+      # ------------------------------------------------------
+      # Sigstore / Cosign
+      # ------------------------------------------------------
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3
 
       - name: Sign image with Cosign keyless Sigstore
-        run: cosign sign --yes "${{ steps.image.outputs.name }}@${{ steps.push.outputs.digest }}"
+        env:
+          IMAGE: ${{ steps.image.outputs.name }}
+          DIGEST: ${{ steps.push.outputs.digest }}
+        run: |
+          set -euo pipefail
 
+          cosign sign \
+            --yes \
+            "${IMAGE}@${DIGEST}"
+
+
+  # ==========================================================
+  # DEPLOY
+  # Cloudflare Pages
+  # ==========================================================
   deploy-cloudflare:
     name: Deploy - Cloudflare Pages
     runs-on: ubuntu-latest
-    needs: supply-chain-state
+
+    needs:
+      - supply-chain-state
+
     if: github.event_name != 'pull_request'
-    environment: cloudflare
+
+    environment:
+      cloudflare
+
+    permissions:
+      contents: read
+
     steps:
+      # ------------------------------------------------------
+      # Retrieve the exact web artifact created in Stage 1.
+      # ------------------------------------------------------
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: web-portofolio-dist
           path: dist
 
+      # ------------------------------------------------------
+      # Validate deployment configuration
+      # ------------------------------------------------------
       - name: Validate Cloudflare configuration
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
         run: |
-          test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing CLOUDFLARE_API_TOKEN secret"; exit 1; }
-          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing CLOUDFLARE_ACCOUNT_ID secret"; exit 1; }
-          test -n "$CLOUDFLARE_PROJECT_NAME" || { echo "Missing CLOUDFLARE_PROJECT_NAME repository variable"; exit 1; }
+          set -euo pipefail
 
+          test -n "$CLOUDFLARE_API_TOKEN" || {
+            echo "Missing CLOUDFLARE_API_TOKEN secret"
+            exit 1
+          }
+
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || {
+            echo "Missing CLOUDFLARE_ACCOUNT_ID secret"
+            exit 1
+          }
+
+          test -n "$CLOUDFLARE_PROJECT_NAME" || {
+            echo "Missing CLOUDFLARE_PROJECT_NAME repository variable"
+            exit 1
+          }
+
+      # ------------------------------------------------------
+      # Deploy
+      # ------------------------------------------------------
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
         run: |
-          npx --yes wrangler@latest pages project create "$CLOUDFLARE_PROJECT_NAME" \
+          set -euo pipefail
+
+          npx --yes wrangler@latest \
+            pages project create "$CLOUDFLARE_PROJECT_NAME" \
             --production-branch "$GITHUB_REF_NAME" || true
 
-          npx --yes wrangler@latest pages deploy dist \
+          npx --yes wrangler@latest \
+            pages deploy dist \
             --project-name "$CLOUDFLARE_PROJECT_NAME" \
             --branch "$GITHUB_REF_NAME"
