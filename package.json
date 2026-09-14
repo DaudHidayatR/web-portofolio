@@ -36,12 +36,12 @@
 		"minimatch": "9.0.9",
 		"path-to-regexp": "6.3.0",
 		"picomatch": "2.3.2",
-		"postcss": "8.5.15",
+		"postcss": "8.5.28",
 		"rollup": "4.62.0",
 		"yaml": "1.10.3",
 		"js-yaml": "^4.1.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.3"
+		"@biomejs/biome": "2.5.13"
 	}
 }
