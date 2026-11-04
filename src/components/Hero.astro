@@ -19,7 +19,7 @@ interface Props {
 const { hero, primaryCta, showContactCta = false } = Astro.props;
 ---
 <section id="home" class="snap-panel px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="hero-title">
-  <div class="mx-auto grid w-full max-w-7xl items-center gap-8 xl:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.75fr)] xl:gap-14">
+  <div class="mx-auto grid w-full max-w-7xl items-center gap-8 md:grid-cols-[minmax(0,1.25fr)_minmax(16rem,0.75fr)] md:gap-10 xl:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.75fr)] xl:gap-14">
     <div class="max-w-3xl">
       <p class="editorial-kicker">{hero.title}</p>
       <h1 id="hero-title" class="mt-4 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-balance sm:text-6xl xl:text-[4rem]">Securing applications through automated delivery.</h1>
@@ -33,13 +33,13 @@ const { hero, primaryCta, showContactCta = false } = Astro.props;
         {hero.location && <span class="editorial-muted text-sm">{hero.location}</span>}
       </div>
     </div>
-    <figure class="mx-auto w-full max-w-[14rem] xl:max-w-[19rem]">
+    <figure class="mx-auto w-full max-w-[14rem] md:max-w-[16rem] xl:max-w-[19rem]">
       <div class="editorial-frame">
         {typeof hero.avatar === "string" ? <img src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width="480" height="600" loading="eager" fetchpriority="high" data-image-component /> : <Image src={hero.avatar} alt={hero.name} class="aspect-[4/5] h-full w-full object-cover object-top" width={480} height={600} loading="eager" fetchpriority="high" data-image-component />}
       </div>
-      <figcaption class="py-2"><span class="font-semibold">{hero.name}</span><span class="editorial-muted ml-2 text-sm">{hero.title}</span></figcaption>
+      <figcaption class="flex flex-col gap-0.5 py-2"><span class="font-semibold">{hero.name}</span><span class="editorial-muted text-sm">{hero.title}</span></figcaption>
     </figure>
-    <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 xl:hidden">
+    <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 md:justify-start xl:hidden">
       {hero.socialLinks.map((link) => { const IconComponent = getIcon(link.icon as any); return <a href={link.url} target={link.url.startsWith("http") ? "_blank" : undefined} rel={link.url.startsWith("http") ? "noopener noreferrer" : undefined} class="editorial-link inline-flex items-center gap-2 text-sm" aria-label={link.label}><IconComponent class="size-4" aria-hidden="true" />{link.label}</a>; })}
       {hero.location && <span class="editorial-muted text-sm">{hero.location}</span>}
     </div>

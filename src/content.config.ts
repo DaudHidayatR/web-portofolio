@@ -64,6 +64,23 @@ const education = defineCollection({
 		}),
 });
 
+// Certifications collection
+const certifications = defineCollection({
+	loader: glob({
+		pattern: "**/*.{md,yaml}",
+		base: "./src/content/certifications",
+	}),
+	schema: ({ image }) =>
+		z.object({
+			title: z.string(),
+			issuer: z.string(),
+			issuedDate: z.coerce.date(),
+			credentialUrl: z.string().url().optional(),
+			logo: image().optional(),
+			skills: z.array(z.string()).optional(),
+		}),
+});
+
 // Project Categories collection
 const projectCategories = defineCollection({
 	loader: glob({
@@ -182,6 +199,7 @@ const general = defineCollection({
 		showBlogSection: z.boolean(),
 		showWorkSection: z.boolean(),
 		showEducationSection: z.boolean(),
+		showCertificationsSection: z.boolean(),
 		showHackathonsSection: z.boolean(),
 		showContactSection: z.boolean(),
 		projectsLayout: z
@@ -209,6 +227,7 @@ export const collections = {
 	hero,
 	work,
 	education,
+	certifications,
 	projectCategories,
 	projects,
 	// hackathons,

@@ -41,6 +41,7 @@ https://www.daudhr.com -> https://daudhr.com
 - Responsive portfolio layout
 - Project case studies
 - Work and education timeline
+- Certifications
 - Contact section
 - Social sharing links
 - Google Analytics tag
@@ -60,6 +61,7 @@ Main sections available on the homepage:
 - Featured projects
 - Work experience
 - Education
+- Certifications
 - Contact
 
 Project case studies are available at:

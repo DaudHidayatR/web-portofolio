@@ -20,6 +20,10 @@ const primaryNavLinks: HeaderLink[] = [
 		id: "experience",
 		label: "Experience",
 	},
+	general.showCertificationsSection && {
+		id: "certifications",
+		label: "Certifications",
+	},
 	general.showAboutSection && { id: "about", label: "About" },
 	general.showContactSection && { id: "contact", label: "Contact" },
 ].filter((link): link is HeaderLink => Boolean(link));
