@@ -3,6 +3,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import { Briefcase, GraduationCap } from "@lucide/astro";
 import About from "../components/About.astro";
 import Blog from "../components/Blog.astro";
+import Certifications from "../components/Certifications.astro";
 import Contact from "../components/Contact.astro";
 import Hackathons from "../components/Hackathons.astro";
 import Hero from "../components/Hero.astro";
@@ -38,6 +39,10 @@ const primaryCta = [
 	firstFeaturedProject,
 	general.showAboutSection && { id: "about", label: "Explore about me" },
 	showExperience && { id: "experience", label: "Explore experience" },
+	general.showCertificationsSection && {
+		id: "certifications",
+		label: "View certifications",
+	},
 	general.showBlogSection && { id: "blog", label: "Read the blog" },
 	general.showHackathonsSection && {
 		id: "hackathons",
@@ -100,6 +105,8 @@ const primaryCta = [
         </div>
       )
     }
+
+    {general.showCertificationsSection && <Certifications />}
 
     {general.showBlogSection && <Blog />}
     {general.showHackathonsSection && <Hackathons />}

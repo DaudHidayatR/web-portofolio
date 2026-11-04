@@ -13,7 +13,7 @@
 	--color-base-200: #e9e6dc;
 	--color-base-300: #d8d3c7;
 	--color-base-content: #1b1c18;
-	--color-primary: #b54a2f;
+	--color-primary: #a8422a;
 	--color-primary-content: #fffaf4;
 	--radius-selector: 0.125rem;
 	--radius-field: 0.125rem;
@@ -30,7 +30,7 @@
 	--color-base-200: #222522;
 	--color-base-300: #2d302c;
 	--color-base-content: #ece9df;
-	--color-primary: #d76a47;
+	--color-primary: #dd7350;
 	--color-primary-content: #171815;
 	--radius-selector: 0.125rem;
 	--radius-field: 0.125rem;
@@ -81,7 +81,7 @@ body {
 		@apply text-base-content/60;
 	}
 	.editorial-action-link {
-		@apply inline-flex min-h-10 items-center gap-2 px-1 py-2 text-sm font-semibold text-primary underline decoration-current/40 underline-offset-4 hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+		@apply inline-flex min-h-11 items-center gap-2 px-1 py-2 text-sm font-semibold text-primary underline decoration-current/40 underline-offset-4 hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
 	}
 	.editorial-action,
 	.editorial-action-secondary,
