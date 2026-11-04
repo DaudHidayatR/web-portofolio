@@ -1,4 +1,4 @@
-FROM oven/bun:1.3.14 AS build
+FROM docker.io/oven/bun:1.4.4 AS build
 WORKDIR /app
 
 COPY . .
